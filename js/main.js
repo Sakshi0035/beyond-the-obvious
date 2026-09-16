@@ -1,16 +1,13 @@
 /* =========================================
    BEYOND THE OBVIOUS
-   AUTOMATIC BLOG POST LOADER
+   AUTOMATIC BLOG POST SYSTEM
+
+   GitHub Pages
+   Static posts.json system
+
+   IMPORTANT:
+   This file DOES NOT use api.github.com.
 ========================================= */
-
-const REPO_OWNER = "Sakshi0035";
-const REPO_NAME = "beyond-the-obvious";
-const REPO_BRANCH = "main";
-
-const POSTS_API =
-    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/posts?ref=${REPO_BRANCH}`;
-
-let allPosts = [];
 
 
 /* =========================================
@@ -22,6 +19,7 @@ const menuToggle =
 
 const sidebar =
     document.getElementById("sidebar");
+
 
 if (menuToggle && sidebar) {
 
@@ -37,30 +35,35 @@ if (menuToggle && sidebar) {
 
         menuToggle.setAttribute(
             "aria-label",
-            isOpen ? "Close menu" : "Open menu"
+            isOpen
+                ? "Close menu"
+                : "Open menu"
         );
 
     });
 
-    document.querySelectorAll(".sidebar a").forEach(link => {
 
-        link.addEventListener("click", () => {
+    document
+        .querySelectorAll(".sidebar a")
+        .forEach(link => {
 
-            sidebar.classList.remove("open");
+            link.addEventListener("click", () => {
 
-            menuToggle.setAttribute(
-                "aria-expanded",
-                "false"
-            );
+                sidebar.classList.remove("open");
 
-            menuToggle.setAttribute(
-                "aria-label",
-                "Open menu"
-            );
+                menuToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                menuToggle.setAttribute(
+                    "aria-label",
+                    "Open menu"
+                );
+
+            });
 
         });
-
-    });
 
 }
 
@@ -107,6 +110,16 @@ function getPostURL(filename) {
 
 /* =========================================
    IMAGE URL
+
+   Example:
+
+   ../9b787...jpg
+
+   becomes:
+
+   https://sakshi0035.github.io/
+   beyond-the-obvious/
+   9b787...jpg
 ========================================= */
 
 function getImageURL(
@@ -118,8 +131,10 @@ function getImageURL(
         return "";
     }
 
+
     imageSource =
         imageSource.trim();
+
 
     if (
         imageSource.startsWith("http://") ||
@@ -131,6 +146,7 @@ function getImageURL(
         return imageSource;
 
     }
+
 
     try {
 
@@ -145,7 +161,8 @@ function getImageURL(
     } catch (error) {
 
         console.error(
-            "Image URL error:",
+            "IMAGE URL ERROR:",
+            imageSource,
             error
         );
 
@@ -157,424 +174,86 @@ function getImageURL(
 
 
 /* =========================================
-   DATE
+   DATE SORT VALUE
 ========================================= */
 
-function getPostDate(postDocument) {
+function getDateValue(dateValue) {
 
-    const metaSelectors = [
-
-        'meta[name="published-date"]',
-        'meta[name="date"]',
-        'meta[name="published"]',
-        'meta[property="article:published_time"]',
-        "time[datetime]",
-        "[data-published-date]"
-
-    ];
+    if (!dateValue) {
+        return 0;
+    }
 
 
-    for (
-        const selector of metaSelectors
+    const parsed =
+        Date.parse(dateValue);
+
+
+    if (!Number.isNaN(parsed)) {
+        return parsed;
+    }
+
+
+    const year =
+        String(dateValue)
+            .match(/\b20\d{2}\b/);
+
+
+    if (year) {
+
+        return Date.parse(
+            `January 1, ${year[0]}`
+        );
+
+    }
+
+
+    return 0;
+
+}
+
+
+/* =========================================
+   DISPLAY DATE
+========================================= */
+
+function formatDisplayDate(dateValue) {
+
+    if (!dateValue) {
+        return "";
+    }
+
+
+    const parsed =
+        Date.parse(dateValue);
+
+
+    if (
+        !Number.isNaN(parsed)
     ) {
 
-        const element =
-            postDocument.querySelector(
-                selector
-            );
-
-        if (!element) {
-            continue;
-        }
-
-
-        const value =
-            element.getAttribute("content") ||
-            element.getAttribute("datetime") ||
-            element.getAttribute("data-published-date") ||
-            element.textContent;
-
-
-        if (cleanText(value)) {
-
-            return cleanText(value);
-
-        }
-
-    }
-
-
-    /*
-     * Your current posts use:
-     *
-     * By Sakshi Madgundi · 2026
-     *
-     * So extract the year from .post-meta.
-     */
-
-    const postMeta =
-        postDocument.querySelector(
-            ".post-meta"
+        return new Intl.DateTimeFormat(
+            "en-US",
+            {
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            }
+        ).format(
+            new Date(parsed)
         );
 
-
-    if (postMeta) {
-
-        const text =
-            cleanText(
-                postMeta.textContent
-            );
-
-
-        const year =
-            text.match(
-                /\b20\d{2}\b/
-            );
-
-
-        if (year) {
-
-            return year[0];
-
-        }
-
     }
 
 
-    return "";
+    return cleanText(
+        dateValue
+    );
 
 }
 
 
 /* =========================================
-   READ ONE POST
-   USING GITHUB CONTENTS API
-========================================= */
-
-async function readPost(file) {
-
-    try {
-
-        /*
-         * IMPORTANT:
-         *
-         * We use file.url.
-         *
-         * NOT file.download_url.
-         * NOT raw.githubusercontent.com.
-         *
-         * This safely handles:
-         *
-         * Mārtāṇḍa?.html
-         */
-
-        const response =
-            await fetch(
-                file.url,
-                {
-                    headers: {
-                        "Accept":
-                            "application/vnd.github+json"
-                    }
-                }
-            );
-
-
-        if (!response.ok) {
-
-            console.error(
-                "Could not fetch:",
-                file.name,
-                response.status
-            );
-
-            return null;
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        if (!data.content) {
-
-            console.error(
-                "GitHub returned no content:",
-                file.name
-            );
-
-            return null;
-
-        }
-
-
-        /*
-         * GitHub Contents API returns
-         * the file as base64.
-         */
-
-        const binary =
-            atob(
-                data.content.replace(/\s/g, "")
-            );
-
-
-        const bytes =
-            Uint8Array.from(
-                binary,
-                character =>
-                    character.charCodeAt(0)
-            );
-
-
-        const html =
-            new TextDecoder(
-                "utf-8"
-            ).decode(bytes);
-
-
-        if (!html) {
-
-            return null;
-
-        }
-
-
-        const parser =
-            new DOMParser();
-
-
-        const postDocument =
-            parser.parseFromString(
-                html,
-                "text/html"
-            );
-
-
-        const postURL =
-            getPostURL(
-                file.name
-            );
-
-
-        /* =====================================
-           TITLE
-        ===================================== */
-
-        const titleElement =
-            postDocument.querySelector(
-                ".post-header h1"
-            ) ||
-            postDocument.querySelector(
-                ".blog-post h1"
-            ) ||
-            postDocument.querySelector(
-                "article h1"
-            ) ||
-            postDocument.querySelector(
-                "h1"
-            ) ||
-            postDocument.querySelector(
-                "title"
-            );
-
-
-        let title =
-            titleElement
-                ? cleanText(
-                    titleElement.textContent
-                )
-                : "";
-
-
-        if (!title) {
-
-            title =
-                file.name
-                    .replace(
-                        /\.html$/i,
-                        ""
-                    )
-                    .replace(
-                        /[-_]/g,
-                        " "
-                    );
-
-        }
-
-
-        /* =====================================
-           CATEGORY
-        ===================================== */
-
-        const categoryElement =
-            postDocument.querySelector(
-                ".post-category"
-            );
-
-
-        const category =
-            categoryElement
-                ? cleanText(
-                    categoryElement.textContent
-                )
-                : "BEYOND THE OBVIOUS";
-
-
-        /* =====================================
-           FEATURED IMAGE
-           
-           IMPORTANT:
-           Find IMG INSIDE figure.
-        ===================================== */
-
-        const imageElement =
-            postDocument.querySelector(
-                ".post-featured-image img"
-            ) ||
-            postDocument.querySelector(
-                "img.post-featured-image"
-            );
-
-
-        let image = "";
-
-
-        if (imageElement) {
-
-            const imageSource =
-                imageElement.getAttribute(
-                    "src"
-                );
-
-
-            if (imageSource) {
-
-                image =
-                    getImageURL(
-                        imageSource,
-                        postURL
-                    );
-
-            }
-
-        }
-
-
-        /* =====================================
-           EXCERPT
-        ===================================== */
-
-        const descriptionElement =
-            postDocument.querySelector(
-                'meta[name="description"]'
-            );
-
-
-        let excerpt =
-            descriptionElement
-                ? cleanText(
-                    descriptionElement.getAttribute(
-                        "content"
-                    )
-                )
-                : "";
-
-
-        if (!excerpt) {
-
-            const firstParagraph =
-                postDocument.querySelector(
-                    ".post-content p"
-                );
-
-
-            if (firstParagraph) {
-
-                excerpt =
-                    cleanText(
-                        firstParagraph.textContent
-                    );
-
-            }
-
-        }
-
-
-        /* =====================================
-           SEARCH TEXT
-        ===================================== */
-
-        const searchText =
-            cleanText(
-                postDocument.body?.textContent ||
-                ""
-            );
-
-
-        /* =====================================
-           DATE
-        ===================================== */
-
-        const date =
-            getPostDate(
-                postDocument
-            );
-
-
-        return {
-
-            file:
-                file.name,
-
-            url:
-                postURL,
-
-            title:
-                title,
-
-            category:
-                category,
-
-            date:
-                date,
-
-            image:
-                image,
-
-            excerpt:
-                excerpt,
-
-            searchText:
-                searchText
-
-        };
-
-
-    } catch (error) {
-
-        /*
-         * IMPORTANT:
-         * One broken post must NOT stop
-         * the other posts from loading.
-         */
-
-        console.error(
-            "POST ERROR:",
-            file.name,
-            error
-        );
-
-        return null;
-
-    }
-
-}
-
-
-/* =========================================
-   CREATE CARD
+   CREATE ONE BLOG CARD
 ========================================= */
 
 function createPostCard(post) {
@@ -589,12 +268,38 @@ function createPostCard(post) {
         "blog-card";
 
 
+    article.dataset.search = (
+
+        post.title +
+        " " +
+        post.category +
+        " " +
+        post.excerpt +
+        " " +
+        post.searchText
+
+    ).toLowerCase();
+
+
+    /* =====================================
+       IMAGE
+
+       IMPORTANT:
+       If post.image is empty,
+       NO image markup is created.
+       
+       No banner.
+       No placeholder.
+       No default image.
+    ===================================== */
+
     const imageHTML =
         post.image
             ? `
                 <a
-                    href="${post.url}"
+                    href="${escapeHTML(post.url)}"
                     class="blog-card-image-link"
+                    aria-label="Read ${escapeHTML(post.title)}"
                 >
 
                     <img
@@ -609,13 +314,35 @@ function createPostCard(post) {
             : "";
 
 
+    /* =====================================
+       DATE
+    ===================================== */
+
+    const dateHTML =
+        post.date
+            ? `
+                <div class="blog-card-meta">
+                    - ${escapeHTML(
+                        formatDisplayDate(post.date)
+                    )}
+                </div>
+            `
+            : "";
+
+
+    /* =====================================
+       CARD
+    ===================================== */
+
     article.innerHTML = `
 
         <div class="blog-card-header">
 
             <h2 class="blog-card-title">
 
-                <a href="${post.url}">
+                <a
+                    href="${escapeHTML(post.url)}"
+                >
                     ${escapeHTML(post.title)}
                 </a>
 
@@ -626,6 +353,7 @@ function createPostCard(post) {
                 class="post-share-button"
                 type="button"
                 aria-label="Share this article"
+                title="Share this article"
             >
                 ↗
             </button>
@@ -633,21 +361,15 @@ function createPostCard(post) {
         </div>
 
 
-        <div class="blog-card-meta">
-
-            ${
-                post.date
-                    ? `- ${escapeHTML(post.date)}`
-                    : ""
-            }
-
-        </div>
+        ${dateHTML}
 
 
         <div
             class="
                 blog-card-body
-                ${post.image ? "" : "blog-card-body--no-image"}
+                ${post.image
+                    ? ""
+                    : "blog-card-body--no-image"}
             "
         >
 
@@ -656,16 +378,26 @@ function createPostCard(post) {
 
             <div class="blog-card-text">
 
-                <p class="blog-card-category">
-                    ${escapeHTML(post.category)}
-                </p>
+                ${
+                    post.category
+                        ? `
+                            <p class="blog-card-category">
+                                ${escapeHTML(
+                                    post.category
+                                )}
+                            </p>
+                        `
+                        : ""
+                }
 
 
                 ${
                     post.excerpt
                         ? `
                             <p class="blog-card-excerpt">
-                                ${escapeHTML(post.excerpt)}
+                                ${escapeHTML(
+                                    post.excerpt
+                                )}
                             </p>
                         `
                         : ""
@@ -684,7 +416,7 @@ function createPostCard(post) {
 
 
             <a
-                href="${post.url}"
+                href="${escapeHTML(post.url)}"
                 class="read-more"
             >
                 READ MORE
@@ -696,7 +428,7 @@ function createPostCard(post) {
 
 
     /* =====================================
-       SHARE
+       SHARE BUTTON
     ===================================== */
 
     const shareButton =
@@ -756,7 +488,10 @@ function createPostCard(post) {
 
                 } catch (error) {
 
-                    /* User cancelled share. */
+                    /*
+                     * User cancelled
+                     * the share dialog.
+                     */
 
                 }
 
@@ -772,38 +507,7 @@ function createPostCard(post) {
 
 
 /* =========================================
-   SORT POSTS
-========================================= */
-
-function sortPosts(posts) {
-
-    return [...posts].sort(
-        (a, b) => {
-
-            const yearA =
-                parseInt(
-                    a.date,
-                    10
-                ) || 0;
-
-
-            const yearB =
-                parseInt(
-                    b.date,
-                    10
-                ) || 0;
-
-
-            return yearB - yearA;
-
-        }
-    );
-
-}
-
-
-/* =========================================
-   DISPLAY
+   DISPLAY POSTS
 ========================================= */
 
 function displayPosts(posts) {
@@ -814,24 +518,36 @@ function displayPosts(posts) {
         );
 
 
-    const noPosts =
+    const noPostsMessage =
         document.getElementById(
             "no-posts-message"
         );
 
 
     if (!container) {
+
+        console.error(
+            "ERROR: #posts-container was not found."
+        );
+
         return;
+
     }
 
 
     container.innerHTML = "";
 
 
-    if (!posts.length) {
+    if (
+        !posts ||
+        posts.length === 0
+    ) {
 
-        if (noPosts) {
-            noPosts.hidden = false;
+        if (noPostsMessage) {
+
+            noPostsMessage.hidden =
+                false;
+
         }
 
         return;
@@ -839,8 +555,11 @@ function displayPosts(posts) {
     }
 
 
-    if (noPosts) {
-        noPosts.hidden = true;
+    if (noPostsMessage) {
+
+        noPostsMessage.hidden =
+            true;
+
     }
 
 
@@ -877,9 +596,9 @@ function setupSearch() {
         () => {
 
             const query =
-                searchInput.value
-                    .trim()
-                    .toLowerCase();
+                cleanText(
+                    searchInput.value
+                ).toLowerCase();
 
 
             if (!query) {
@@ -893,23 +612,24 @@ function setupSearch() {
             }
 
 
-            const filtered =
+            const filteredPosts =
                 allPosts.filter(
                     post => {
 
-                        const searchable =
-                            (
-                                post.title +
-                                " " +
-                                post.category +
-                                " " +
-                                post.excerpt +
-                                " " +
-                                post.searchText
-                            ).toLowerCase();
+                        const searchableText = (
+
+                            post.title +
+                            " " +
+                            post.category +
+                            " " +
+                            post.excerpt +
+                            " " +
+                            post.searchText
+
+                        ).toLowerCase();
 
 
-                        return searchable.includes(
+                        return searchableText.includes(
                             query
                         );
 
@@ -918,7 +638,7 @@ function setupSearch() {
 
 
             displayPosts(
-                filtered
+                filteredPosts
             );
 
         }
@@ -928,7 +648,14 @@ function setupSearch() {
 
 
 /* =========================================
-   LOAD ALL POSTS
+   POSTS
+========================================= */
+
+let allPosts = [];
+
+
+/* =========================================
+   LOAD posts.json
 ========================================= */
 
 async function loadPosts() {
@@ -948,7 +675,7 @@ async function loadPosts() {
     if (!container) {
 
         console.error(
-            "posts-container not found"
+            "ERROR: posts-container not found."
         );
 
         return;
@@ -958,104 +685,169 @@ async function loadPosts() {
 
     try {
 
-        console.log(
-            "Beyond The Obvious: loading posts..."
-        );
-
+        /*
+         * IMPORTANT:
+         *
+         * We are loading a normal static
+         * JSON file from the same GitHub
+         * Pages website.
+         *
+         * There is NO GitHub API here.
+         */
 
         const response =
             await fetch(
-                POSTS_API
+                "posts.json",
+                {
+                    cache:
+                        "no-store"
+                }
             );
 
 
         if (!response.ok) {
 
             throw new Error(
-                "GitHub API error: " +
-                response.status
+                `posts.json returned ${response.status}`
             );
 
         }
 
 
-        const files =
+        const posts =
             await response.json();
 
 
-        console.log(
-            "Files found:",
-            files
-        );
+        if (
+            !Array.isArray(posts)
+        ) {
 
-
-        const postFiles =
-            files.filter(
-                file =>
-                    file.type === "file" &&
-                    /\.html$/i.test(
-                        file.name
-                    )
+            throw new Error(
+                "posts.json is not a valid post list."
             );
 
-
-        console.log(
-            "HTML posts:",
-            postFiles.map(
-                file => file.name
-            )
-        );
+        }
 
 
-        /*
-         * Each post is handled independently.
-         */
-
-        const results =
-            await Promise.allSettled(
-                postFiles.map(
-                    readPost
-                )
-            );
-
+        /* =================================
+           NORMALIZE POSTS
+        ================================= */
 
         allPosts =
-            results
+            posts
+                .map(post => {
+
+                    const filename =
+                        post.file ||
+                        post.filename ||
+                        "";
+
+
+                    const url =
+                        post.url ||
+                        getPostURL(
+                            filename
+                        );
+
+
+                    const image =
+                        post.image
+                            ? getImageURL(
+                                post.image,
+                                url
+                            )
+                            : "";
+
+
+                    return {
+
+                        file:
+                            filename,
+
+                        url:
+                            url,
+
+                        title:
+                            cleanText(
+                                post.title
+                            ),
+
+                        category:
+                            cleanText(
+                                post.category
+                            ),
+
+                        date:
+                            post.date || "",
+
+                        image:
+                            image,
+
+                        excerpt:
+                            cleanText(
+                                post.excerpt
+                            ),
+
+                        searchText:
+                            cleanText(
+                                post.searchText
+                            )
+
+                    };
+
+                })
                 .filter(
-                    result =>
-                        result.status ===
-                        "fulfilled"
-                )
-                .map(
-                    result =>
-                        result.value
-                )
-                .filter(
-                    Boolean
+                    post =>
+                        post.title ||
+                        post.file
                 );
 
 
-        allPosts =
-            sortPosts(
-                allPosts
-            );
+        /* =================================
+           NEWEST FIRST
+        ================================= */
+
+        allPosts.sort(
+            (a, b) => {
+
+                return (
+                    getDateValue(b.date) -
+                    getDateValue(a.date)
+                );
+
+            }
+        );
 
 
         console.log(
-            "Successfully loaded posts:",
+            "Beyond The Obvious posts loaded:",
             allPosts
         );
 
 
+        /* =================================
+           REMOVE LOADING MESSAGE
+        ================================= */
+
         if (loading) {
+
             loading.remove();
+
         }
 
+
+        /* =================================
+           DISPLAY
+        ================================= */
 
         displayPosts(
             allPosts
         );
 
+
+        /* =================================
+           SEARCH
+        ================================= */
 
         setupSearch();
 
@@ -1063,7 +855,7 @@ async function loadPosts() {
     } catch (error) {
 
         console.error(
-            "BLOG LOADING FAILED:",
+            "BLOG LOADING ERROR:",
             error
         );
 
@@ -1080,8 +872,7 @@ async function loadPosts() {
 
                     <p>
                         ${escapeHTML(
-                            error.message ||
-                            "Unknown error"
+                            error.message
                         )}
                     </p>
 
