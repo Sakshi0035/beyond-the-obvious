@@ -20,132 +20,678 @@
 
 
 <!-- =====================================================
-     ONLY IMAGE SAFETY / SQUARE IMAGE FIX
-     
-     THE MAIN BLOG LAYOUT IS CONTROLLED BY style.css
+     RENUKA POST — LAYOUT SAFETY
 ====================================================== -->
 
 <style>
 
-.post-featured-image {
-    display: block !important;
-    position: relative !important;
+/* =====================================================
+   BASIC PAGE SAFETY
+====================================================== */
 
-    width: 100% !important;
-    max-width: 100% !important;
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
 
-    height: auto !important;
-
-    margin: 0 0 34px !important;
-    padding: 0 !important;
-
-    overflow: hidden !important;
-
-    float: none !important;
-    clear: both !important;
-
-    box-sizing: border-box !important;
-
-    line-height: 0 !important;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 
-.post-featured-image img {
-    display: block !important;
+/* =====================================================
+   COMMON SITE HERO
+   SAME HEADER USED THROUGHOUT THE WEBSITE
+====================================================== */
 
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-
-    aspect-ratio: 1 / 1 !important;
-
-    object-fit: cover !important;
-    object-position: center !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    float: none !important;
-    clear: both !important;
-
-    box-sizing: border-box !important;
+.post-hero {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 
-/*
+/* =====================================================
+   BLOG AREA
+====================================================== */
+
+.blog-area {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+
+/* =====================================================
+   BLOG CONTAINER
+====================================================== */
+
+.blog-container {
+    width: 100%;
+    max-width: 920px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding-left: 0;
+    padding-right: 0;
+
+    min-width: 0;
+}
+
+
+/* =====================================================
+   SINGLE POST CARD
+====================================================== */
+
+.blog-post.single-post {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    margin: 0;
+    padding: 0;
+
+    height: auto;
+    min-height: 0;
+
+    overflow: visible;
+
+    float: none;
+}
+
+
+/* =====================================================
+   POST HEADER
+====================================================== */
+
+.single-post .post-header {
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    height: auto;
+    min-height: 0;
+
+    margin: 0;
+    padding: 32px 32px 26px;
+
+    overflow: visible;
+
+    float: none;
+}
+
+
+/* =====================================================
+   CATEGORY
+====================================================== */
+
+.single-post .post-category {
+
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0 0 14px;
+    padding: 0;
+
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+
+/* =====================================================
+   TITLE
+====================================================== */
+
+.single-post .post-header h1 {
+
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    height: auto;
+    min-height: 0;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: visible;
+
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+
+/* =====================================================
+   META
+====================================================== */
+
+.single-post .post-meta {
+
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    margin: 16px 0 0;
+    padding: 0;
+
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+
+/* =====================================================
+   FEATURED IMAGE
+
+   EXACTLY 1:1
+
+   Image is kept inside the article.
+   Nothing can overlap the content.
+====================================================== */
+
+.single-post .post-featured-image {
+
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    aspect-ratio: 1 / 1;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden;
+
+    float: none;
+    clear: both;
+
+    line-height: 0;
+
+    background: transparent;
+}
+
+
+/* =====================================================
+   FEATURED IMAGE ITSELF
+====================================================== */
+
+.single-post .post-featured-image img {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    max-width: 100%;
+    min-width: 0;
+
+    margin: 0;
+    padding: 0;
+
+    object-fit: cover;
+    object-position: center;
+
+    float: none;
+    clear: both;
+
+    border: 0;
+}
+
+
+/* =====================================================
+   ARTICLE CONTENT
+
    IMPORTANT:
-   Article content must always begin BELOW
-   the square image.
-*/
+   Starts BELOW the square image.
+====================================================== */
 
-.post-content {
-    display: block !important;
+.single-post .post-content {
 
-    width: 100% !important;
-    max-width: 100% !important;
+    position: relative;
 
-    margin-top: 0 !important;
+    display: block;
 
-    clear: both !important;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 
-    overflow: visible !important;
+    height: auto;
+    min-height: 0;
 
-    box-sizing: border-box !important;
+    margin: 0;
+    padding: 40px 32px 50px;
 
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
+    overflow: visible;
+
+    float: none;
+    clear: both;
+
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 
-.post-content p,
-.post-content h2,
-.post-content h3,
-.post-content ul,
-.post-content ol,
-.post-content blockquote {
-    max-width: 100% !important;
+/* =====================================================
+   PARAGRAPHS
+====================================================== */
 
-    box-sizing: border-box !important;
+.single-post .post-content p {
 
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0 0 22px;
+    padding: 0;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 
-/*
-   Never allow long text to escape the article.
-*/
+/* =====================================================
+   HEADINGS
+====================================================== */
 
-.post-content * {
-    max-width: 100% !important;
+.single-post .post-content h2 {
+
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    margin: 48px 0 20px;
+    padding: 0;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 
-/* Mobile */
+/* =====================================================
+   H3
+====================================================== */
+
+.single-post .post-content h3 {
+
+    max-width: 100%;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+
+/* =====================================================
+   LISTS
+====================================================== */
+
+.single-post .post-content ul,
+.single-post .post-content ol {
+
+    display: block;
+
+    width: auto;
+    max-width: 100%;
+
+    margin: 0 0 24px;
+    padding-left: 28px;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+
+/* =====================================================
+   LIST ITEMS
+====================================================== */
+
+.single-post .post-content li {
+
+    max-width: 100%;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+
+/* =====================================================
+   BLOCKQUOTES
+====================================================== */
+
+.single-post .post-content blockquote {
+
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    margin: 30px 0;
+    padding: 20px 24px;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+
+/* =====================================================
+   SOURCE NOTE
+====================================================== */
+
+.single-post .source-note {
+
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    height: auto;
+
+    margin: 46px 0 0;
+    padding: 24px;
+
+    overflow: visible;
+
+    overflow-wrap: break-word;
+}
+
+
+/* =====================================================
+   RELATED POSTS
+====================================================== */
+
+.related-posts {
+
+    width: 100%;
+    max-width: 100%;
+
+    overflow-x: hidden;
+
+    clear: both;
+}
+
+
+.related-posts-inner {
+
+    width: 100%;
+    max-width: 920px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding-left: 0;
+    padding-right: 0;
+
+    box-sizing: border-box;
+}
+
+
+.related-posts-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(230px, 1fr)
+        );
+
+    gap: 24px;
+
+    width: 100%;
+    max-width: 100%;
+}
+
+
+.related-post-card {
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    height: auto;
+
+    overflow: hidden;
+}
+
+
+.related-post-card-link {
+
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    text-decoration: none;
+}
+
+
+.related-post-card img {
+
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    height: auto;
+
+    margin: 0;
+    padding: 0;
+
+    object-fit: cover;
+}
+
+
+.related-post-card-content {
+
+    width: 100%;
+    max-width: 100%;
+
+    padding: 18px;
+
+    overflow-wrap: break-word;
+}
+
+
+.related-post-card-content h3 {
+
+    max-width: 100%;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+
+/* =====================================================
+   DESKTOP
+====================================================== */
+
+@media (min-width: 769px) {
+
+    .blog-container,
+    .related-posts-inner {
+        max-width: 920px;
+    }
+
+}
+
+
+/* =====================================================
+   MOBILE
+====================================================== */
 
 @media (max-width: 768px) {
 
-    .post-featured-image {
-        margin-bottom: 28px !important;
+    .blog-container {
+
+        width: 100%;
+        max-width: 100%;
+
+        padding-left: 16px;
+        padding-right: 16px;
+
     }
 
-    .post-featured-image img {
-        width: 100% !important;
-        height: auto !important;
-        aspect-ratio: 1 / 1 !important;
-        object-fit: cover !important;
+
+    .single-post .post-header {
+
+        padding: 24px 20px 22px;
+
+    }
+
+
+    .single-post .post-header h1 {
+
+        font-size: clamp(
+            28px,
+            8vw,
+            40px
+        );
+
+        line-height: 1.15;
+
+    }
+
+
+    /* Square image remains square on mobile */
+
+    .single-post .post-featured-image {
+
+        width: 100%;
+        aspect-ratio: 1 / 1;
+
+        margin: 0;
+
+    }
+
+
+    .single-post .post-featured-image img {
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+    }
+
+
+    .single-post .post-content {
+
+        padding: 32px 20px 40px;
+
+    }
+
+
+    .single-post .post-content h2 {
+
+        margin-top: 38px;
+
+    }
+
+
+    .single-post .post-content blockquote {
+
+        padding: 18px;
+
+        margin-left: 0;
+        margin-right: 0;
+
+    }
+
+
+    .single-post .source-note {
+
+        padding: 20px;
+
+    }
+
+
+    .related-posts-inner {
+
+        width: 100%;
+        max-width: 100%;
+
+        padding-left: 16px;
+        padding-right: 16px;
+
+    }
+
+
+    .related-posts-grid {
+
+        grid-template-columns: 1fr;
+
     }
 
 }
 
 
-/* Very small phones */
+/* =====================================================
+   VERY SMALL PHONES
+====================================================== */
 
 @media (max-width: 420px) {
 
-    .post-featured-image {
-        margin-bottom: 24px !important;
+    .blog-container {
+
+        padding-left: 12px;
+        padding-right: 12px;
+
+    }
+
+
+    .single-post .post-header {
+
+        padding-left: 16px;
+        padding-right: 16px;
+
+    }
+
+
+    .single-post .post-content {
+
+        padding-left: 16px;
+        padding-right: 16px;
+
+    }
+
+
+    .single-post .post-content p {
+
+        margin-bottom: 18px;
+
+    }
+
+
+    .single-post .post-content h2 {
+
+        font-size: 26px;
+        line-height: 1.2;
+
+    }
+
+
+    .related-posts-inner {
+
+        padding-left: 12px;
+        padding-right: 12px;
+
     }
 
 }
@@ -181,7 +727,6 @@
     </button>
 
 </header>
-
 
 
 <!-- =====================================================
@@ -248,13 +793,57 @@
 </aside>
 
 
-
 <!-- =====================================================
      MAIN
 ====================================================== -->
 
 <main class="main-content">
 
+
+<!-- =====================================================
+     COMMON WEBSITE HERO / HEADER
+
+     THIS IS THE SAME COMMON HEADER
+     SHOWN ON THE OTHER PAGES.
+====================================================== -->
+
+<section class="post-hero">
+
+    <div class="post-hero-content">
+
+        <h1>
+            Beyond The Obvious
+        </h1>
+
+        <p>
+            Stories, ideas, experiences and things worth thinking about.
+            Look beyond what's obvious.
+        </p>
+
+        <nav class="post-hero-nav">
+
+            <a href="../index.html">
+                HOME
+            </a>
+
+            <a href="../about.html">
+                ABOUT
+            </a>
+
+            <a href="../contact.html">
+                CONTACT
+            </a>
+
+        </nav>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     BLOG AREA
+====================================================== -->
 
 <section class="blog-area">
 
@@ -291,11 +880,9 @@
 </header>
 
 
-
 <!-- =====================================================
      FEATURED IMAGE
-     
-     SQUARE 1:1
+     EXACTLY 1:1
 ====================================================== -->
 
 <figure class="post-featured-image">
@@ -303,11 +890,9 @@
     <img
         src="../9b787a217fe146debf056bd89142cc92.jpg"
         alt="Renuka Devi"
-        loading="eager"
     >
 
 </figure>
-
 
 
 <!-- =====================================================
@@ -906,7 +1491,6 @@ than presenting one version as the single historical truth.
 </section>
 
 
-
 <!-- =====================================================
      RELATED POSTS
 ====================================================== -->
@@ -918,6 +1502,7 @@ than presenting one version as the single historical truth.
 <h2>
 More From Beyond The Obvious
 </h2>
+
 
 <div
     class="related-posts-grid"
@@ -943,7 +1528,6 @@ Loading more articles...
 </section>
 
 
-
 <!-- =====================================================
      FOOTER
 ====================================================== -->
@@ -960,13 +1544,16 @@ Loading more articles...
 </main>
 
 
+<!-- =====================================================
+     MAIN JS
+====================================================== -->
 
 <script src="../js/main.js"></script>
 
 
-
 <!-- =====================================================
      POST DATE + RELATED POSTS
+     USES posts.json — NO GITHUB API
 ====================================================== -->
 
 <script>
@@ -1013,6 +1600,7 @@ document.addEventListener(
             if (!imageSource) {
                 return "";
             }
+
 
             imageSource =
                 String(imageSource).trim();
@@ -1121,6 +1709,10 @@ document.addEventListener(
             }
 
 
+            /* =========================================
+               CURRENT POST DATE
+            ========================================== */
+
             const current =
                 posts.find(
                     function (post) {
@@ -1158,6 +1750,10 @@ document.addEventListener(
 
             }
 
+
+            /* =========================================
+               RELATED POSTS
+            ========================================== */
 
             if (!relatedContainer) {
                 return;
@@ -1204,6 +1800,13 @@ document.addEventListener(
                         "related-post-card";
 
 
+                    /* =================================
+                       IMAGE
+
+                       NO IMAGE =
+                       NO IMAGE ELEMENT
+                    ================================== */
+
                     let imageHTML = "";
 
 
@@ -1238,6 +1841,10 @@ document.addEventListener(
                     }
 
 
+                    /* =================================
+                       EXCERPT
+                    ================================== */
+
                     let excerptHTML = "";
 
 
@@ -1260,6 +1867,10 @@ document.addEventListener(
 
                     }
 
+
+                    /* =================================
+                       CARD
+                    ================================== */
 
                     card.innerHTML = `
 
