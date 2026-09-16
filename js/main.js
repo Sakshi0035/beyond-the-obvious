@@ -72,7 +72,7 @@ function escapeHTML(value) {
 
 
 /* =========================================
-   POST URL
+   CREATE POST URL
 ========================================= */
 
 function getPostURL(filename) {
@@ -87,7 +87,7 @@ function getPostURL(filename) {
 
 
 /* =========================================
-   IMAGE URL
+   CREATE IMAGE URL
 ========================================= */
 
 function getImageURL(imageSource, postURL) {
@@ -103,9 +103,7 @@ function getImageURL(imageSource, postURL) {
         imageSource.trim();
 
 
-    /*
-     * Already an absolute URL
-     */
+    /* Absolute image URL */
 
     if (
         imageSource.startsWith("http://") ||
@@ -119,19 +117,19 @@ function getImageURL(imageSource, postURL) {
 
 
     /*
-     * Resolve image relative to the
-     * actual HTML post location.
+     * Resolve the image relative to the
+     * actual blog post.
      *
      * Example:
      *
-     * posts/my-post.html
+     * posts/post.html
+     * posts/image.jpg
      *
-     * image:
-     * 9b787....jpg
+     * src="image.jpg"
      *
      * becomes:
      *
-     * posts/9b787....jpg
+     * /beyond-the-obvious/posts/image.jpg
      */
 
     try {
@@ -169,7 +167,7 @@ async function readPost(file) {
     try {
 
         /*
-         * URL used when opening the article
+         * Browser URL for the article
          */
 
         const postURL =
@@ -177,23 +175,27 @@ async function readPost(file) {
 
 
         /*
-         * GitHub gives us a direct raw file URL.
-         * This avoids problems with special characters
-         * in filenames such as:
+         * GitHub's raw download URL.
+         *
+         * This safely handles filenames containing:
          *
          * :
          * ?
          * ā
+         * ḍ
+         * etc.
          */
 
         const response =
-            await fetch(file.download_url);
+            await fetch(
+                file.download_url
+            );
 
 
         if (!response.ok) {
 
             console.error(
-                "Could not read post:",
+                "Could not read:",
                 file.name
             );
 
@@ -363,10 +365,6 @@ async function readPost(file) {
                 : "";
 
 
-        /*
-         * Fallback to first paragraph
-         */
-
         if (!excerpt) {
 
             const firstParagraph =
@@ -411,6 +409,7 @@ async function readPost(file) {
         };
 
 
+
     } catch (error) {
 
         console.error(
@@ -428,7 +427,7 @@ async function readPost(file) {
 
 
 /* =========================================
-   CREATE POST CARD
+   CREATE BLOG CARD
 ========================================= */
 
 function createPostCard(post) {
@@ -454,6 +453,7 @@ function createPostCard(post) {
 
 
     article.innerHTML = `
+
 
         ${
             post.image
@@ -600,7 +600,7 @@ function displayPosts(posts) {
 
 
 /* =========================================
-   LOAD POSTS FROM GITHUB
+   LOAD ALL POSTS
 ========================================= */
 
 async function loadPosts() {
@@ -613,7 +613,6 @@ async function loadPosts() {
 
 
     try {
-
 
         const response =
             await fetch(
@@ -636,8 +635,7 @@ async function loadPosts() {
 
 
         /*
-         * Only HTML files
-         * inside /posts/
+         * Only .html files from /posts/
          */
 
         const postFiles =
@@ -656,9 +654,8 @@ async function loadPosts() {
             });
 
 
-
         /*
-         * Read every HTML post
+         * Read every post
          */
 
         const loadedPosts =
@@ -677,9 +674,8 @@ async function loadPosts() {
             );
 
 
-
         /*
-         * Display posts
+         * Remove loading message
          */
 
         if (loadingMessage) {
@@ -689,13 +685,16 @@ async function loadPosts() {
         }
 
 
+        /*
+         * Show posts
+         */
+
         displayPosts(
             allPosts
         );
 
 
     } catch (error) {
-
 
         console.error(
             "BLOG POST LOADING ERROR:",
@@ -736,7 +735,7 @@ async function loadPosts() {
 
 
 /* =========================================
-   SEARCH
+   BLOG SEARCH
 ========================================= */
 
 if (searchInput) {
@@ -744,7 +743,6 @@ if (searchInput) {
     searchInput.addEventListener(
         "input",
         function () {
-
 
             const searchTerm =
                 this.value
@@ -774,7 +772,6 @@ if (searchInput) {
 
             const filteredPosts =
                 allPosts.filter(post => {
-
 
                     const searchableText = (
 
@@ -806,7 +803,7 @@ if (searchInput) {
 
 
 /* =========================================
-   START
+   START BLOG SYSTEM
 ========================================= */
 
 loadPosts();
