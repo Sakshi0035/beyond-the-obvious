@@ -1,7 +1,7 @@
 /* =========================================
    BEYOND THE OBVIOUS
-   AUTOMATIC BLOGGER-STYLE POST SYSTEM
-   GitHub Pages + GitHub API
+   AUTOMATIC BLOG POST SYSTEM
+   GitHub Pages + GitHub Contents API
 ========================================= */
 
 const REPO_OWNER = "Sakshi0035";
@@ -19,8 +19,11 @@ const REPO_API_BASE =
    MOBILE MENU
 ========================================= */
 
-const menuToggle = document.getElementById("menuToggle");
-const sidebar = document.getElementById("sidebar");
+const menuToggle =
+    document.getElementById("menuToggle");
+
+const sidebar =
+    document.getElementById("sidebar");
 
 if (menuToggle && sidebar) {
 
@@ -57,7 +60,9 @@ if (menuToggle && sidebar) {
                 "Open menu"
             );
         });
+
     });
+
 }
 
 
@@ -86,55 +91,15 @@ function escapeHTML(value) {
 
 
 /* =========================================
-   SAFE POST URL
+   POST URL
+   Encodes ? and other special characters
 ========================================= */
-
-/*
- * IMPORTANT:
- *
- * The Mārtāṇḍa filename contains:
- *
- * ?
- *
- * Therefore encode the complete filename
- * before putting it into the article URL.
- */
 
 function getPostURL(filename) {
 
     return (
         "posts/" +
         encodeURIComponent(filename)
-    );
-}
-
-
-/* =========================================
-   SAFE RAW GITHUB URL
-========================================= */
-
-/*
- * DO NOT use file.download_url.
- *
- * A GitHub filename containing "?" can break
- * the raw download URL because "?" is treated
- * as the beginning of a query string.
- *
- * Every path segment is therefore encoded.
- */
-
-function getSafeRawURL(file) {
-
-    const encodedPath =
-        file.path
-            .split("/")
-            .map(segment => encodeURIComponent(segment))
-            .join("/");
-
-    return (
-        `https://raw.githubusercontent.com/` +
-        `${REPO_OWNER}/${REPO_NAME}/` +
-        `${REPO_BRANCH}/${encodedPath}`
     );
 }
 
@@ -259,23 +224,40 @@ function getDateFromPost(postDocument) {
 
         if (cleanText(value)) {
 
-            const cleaned =
-                cleanText(value);
+            return formatDate(
+                cleanText(value)
+            );
+        }
+    }
 
 
-            if (
-                /^\d{4}-\d{2}-\d{2}/.test(
-                    cleaned
-                )
-            ) {
+    /* Also look for a visible post date such as:
+       By Sakshi Madgundi · 2026
+    */
 
-                return formatDate(
-                    cleaned
-                );
-            }
+    const metaElement =
+        postDocument.querySelector(
+            ".post-meta"
+        );
 
 
-            return cleaned;
+    if (metaElement) {
+
+        const text =
+            cleanText(
+                metaElement.textContent
+            );
+
+
+        const yearMatch =
+            text.match(
+                /\b(20\d{2})\b/
+            );
+
+
+        if (yearMatch) {
+
+            return `January 1, ${yearMatch[1]}`;
         }
     }
 
@@ -286,6 +268,7 @@ function getDateFromPost(postDocument) {
 
 /* =========================================
    GITHUB COMMIT DATE
+   Used only when article has no date
 ========================================= */
 
 const dateCache =
@@ -337,9 +320,8 @@ async function getGitHubPostDate(filename) {
 
         if (
             !Array.isArray(commits) ||
-            !commits.length
+            commits.length === 0
         ) {
-
             return "";
         }
 
@@ -378,7 +360,47 @@ async function getGitHubPostDate(filename) {
 
 
 /* =========================================
+   DECODE GITHUB BASE64 CONTENT
+========================================= */
+
+function decodeGitHubContent(base64Content) {
+
+    try {
+
+        const binaryString =
+            atob(
+                base64Content.replace(/\s/g, "")
+            );
+
+
+        const bytes =
+            Uint8Array.from(
+                binaryString,
+                character =>
+                    character.charCodeAt(0)
+            );
+
+
+        return new TextDecoder(
+            "utf-8"
+        ).decode(bytes);
+
+    } catch (error) {
+
+        console.error(
+            "GITHUB CONTENT DECODE ERROR:",
+            error
+        );
+
+        return "";
+    }
+}
+
+
+/* =========================================
    READ ONE POST
+   Uses GitHub API instead of raw URL
+   so filenames containing ? work correctly.
 ========================================= */
 
 async function readPost(file) {
@@ -391,21 +413,25 @@ async function readPost(file) {
             );
 
 
-        /* =====================================
-           READ HTML SAFELY
-        ===================================== */
-
-        const safeRawURL =
-            getSafeRawURL(
-                file
-            );
-
+        /*
+         * IMPORTANT:
+         * Use GitHub's API URL.
+         *
+         * We do NOT use file.download_url
+         * because the Mārtāṇḍa filename contains ?.
+         */
 
         const response =
             await fetch(
-                safeRawURL,
+                file.url,
                 {
-                    cache: "no-store"
+                    headers: {
+                        "Accept":
+                            "application/vnd.github+json"
+                    },
+
+                    cache:
+                        "no-store"
                 }
             );
 
@@ -422,8 +448,36 @@ async function readPost(file) {
         }
 
 
+        const fileData =
+            await response.json();
+
+
+        if (!fileData.content) {
+
+            console.error(
+                "No content returned for:",
+                file.name
+            );
+
+            return null;
+        }
+
+
         const html =
-            await response.text();
+            decodeGitHubContent(
+                fileData.content
+            );
+
+
+        if (!html) {
+
+            console.error(
+                "Empty HTML for:",
+                file.name
+            );
+
+            return null;
+        }
 
 
         const parser =
@@ -508,26 +562,19 @@ async function readPost(file) {
 
         /* =====================================
            FEATURED IMAGE
+           
+           IMPORTANT:
+           No image = NO image.
+           No banner fallback.
+           No placeholder.
         ===================================== */
-
-        /*
-         * IMPORTANT:
-         *
-         * There is NO default image anymore.
-         *
-         * If the article has an image:
-         *     use it.
-         *
-         * If the article has NO image:
-         *     image remains "".
-         *
-         * The Home card will then be created
-         * without an image section.
-         */
 
         const imageElement =
             postDocument.querySelector(
-                ".post-featured-image"
+                ".post-featured-image img"
+            ) ||
+            postDocument.querySelector(
+                "img.post-featured-image"
             );
 
 
@@ -629,21 +676,29 @@ async function readPost(file) {
 
         return {
 
-            file: file.name,
+            file:
+                file.name,
 
-            url: postURL,
+            url:
+                postURL,
 
-            title: title,
+            title:
+                title,
 
-            category: category,
+            category:
+                category,
 
-            date: date,
+            date:
+                date,
 
-            image: image,
+            image:
+                image,
 
-            excerpt: excerpt,
+            excerpt:
+                excerpt,
 
-            searchText: searchText
+            searchText:
+                searchText
         };
 
 
@@ -690,10 +745,8 @@ function createPostCard(post) {
 
 
     /*
-     * IMAGE BLOCK
-     *
-     * Only created when the actual
-     * blog post contains an image.
+     * ONLY create image markup if
+     * the article actually contains an image.
      */
 
     const imageHTML =
@@ -875,6 +928,7 @@ function createPostCard(post) {
                     /* User cancelled sharing. */
 
                 }
+
             }
         );
     }
@@ -1058,18 +1112,22 @@ function setupSearch() {
             displayPosts(
                 filteredPosts
             );
+
         }
     );
 }
 
 
 /* =========================================
-   LOAD EVERY .HTML FILE DIRECTLY INSIDE
-   /posts/
+   ALL POSTS
 ========================================= */
 
 let allPosts = [];
 
+
+/* =========================================
+   LOAD POSTS
+========================================= */
 
 async function loadPosts() {
 
@@ -1091,6 +1149,11 @@ async function loadPosts() {
 
 
     try {
+
+        console.log(
+            "Loading blog posts..."
+        );
+
 
         const response =
             await fetch(
@@ -1119,10 +1182,11 @@ async function loadPosts() {
             await response.json();
 
 
-        /*
-         * Every HTML file directly inside
-         * /posts/ becomes an article.
-         */
+        console.log(
+            "GitHub posts folder:",
+            files
+        );
+
 
         const postFiles =
             files.filter(
@@ -1132,6 +1196,14 @@ async function loadPosts() {
                         file.name
                     )
             );
+
+
+        console.log(
+            "HTML posts found:",
+            postFiles.map(
+                file => file.name
+            )
+        );
 
 
         const loadedPosts =
@@ -1152,6 +1224,12 @@ async function loadPosts() {
             sortPosts(
                 allPosts
             );
+
+
+        console.log(
+            "Loaded posts:",
+            allPosts
+        );
 
 
         if (loadingMessage) {
