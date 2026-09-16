@@ -1,6 +1,3 @@
-STEP 5
-PASTE THIS COMPLETE CODE INTO main.js:
-
 const menuToggle = document.getElementById("menuToggle");
 const sidebar = document.getElementById("sidebar");
 
