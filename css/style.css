@@ -1,0 +1,554 @@
+/* =========================================
+   RESET
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eeeeee;
+    color: #111111;
+}
+
+
+/* =========================================
+   LINKS
+========================================= */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    width: 347px;
+    height: 100vh;
+
+    background: #eeeeee;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding-top: 150px;
+
+    z-index: 1000;
+}
+
+
+.profile {
+    text-align: center;
+}
+
+
+.profile-image {
+    width: 148px;
+    height: 148px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    display: block;
+
+    margin: 0 auto 40px;
+}
+
+
+.profile h3 {
+    font-size: 16px;
+
+    font-weight: 700;
+
+    margin-bottom: 35px;
+}
+
+
+.profile-button {
+    display: inline-flex;
+
+    justify-content: center;
+    align-items: center;
+
+    height: 34px;
+
+    padding: 0 25px;
+
+    border: 1px solid #ff4c4c;
+
+    border-radius: 25px;
+
+    color: #ff3333;
+
+    font-size: 14px;
+
+    transition: 0.25s ease;
+}
+
+
+.profile-button:hover {
+    background: #ff3333;
+
+    color: white;
+}
+
+
+/* =========================================
+   SIDEBAR SOCIAL
+========================================= */
+
+.sidebar-social {
+    display: flex;
+
+    gap: 22px;
+
+    margin-top: 45px;
+
+    font-size: 14px;
+}
+
+
+.sidebar-social a:hover {
+    color: #ff3333;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.main-content {
+    margin-left: 347px;
+
+    min-height: 100vh;
+}
+
+
+/* =========================================
+   HERO
+========================================= */
+
+.hero {
+    min-height: 490px;
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.48),
+            rgba(0, 0, 0, 0.48)
+        ),
+        url("../images/hero.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    color: white;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+
+.hero-overlay {
+    width: min(900px, 90%);
+
+    padding-top: 30px;
+}
+
+
+.hero h1 {
+    font-size: clamp(42px, 5vw, 58px);
+
+    line-height: 1.1;
+
+    margin-bottom: 22px;
+
+    font-weight: 700;
+}
+
+
+.hero p {
+    max-width: 850px;
+
+    margin: 0 auto;
+
+    font-size: 17px;
+
+    line-height: 1.45;
+
+    color: #eeeeee;
+}
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+.main-nav {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 55px;
+
+    margin-top: 65px;
+}
+
+
+.main-nav a {
+    font-size: 16px;
+
+    font-weight: 700;
+
+    position: relative;
+
+    padding-bottom: 7px;
+}
+
+
+.main-nav a::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 0;
+
+    height: 2px;
+
+    background: white;
+
+    transition: width 0.25s ease;
+}
+
+
+.main-nav a:hover::after {
+    width: 100%;
+}
+
+
+/* =========================================
+   BLOG AREA
+========================================= */
+
+.blog-area {
+    background: #eeeeee;
+
+    padding: 0 35px 80px;
+}
+
+
+.blog-container {
+    max-width: 1050px;
+
+    margin: -1px auto 0;
+}
+
+
+/* =========================================
+   BLOG CARD
+========================================= */
+
+.blog-card {
+    background: white;
+
+    padding: 42px 50px 50px;
+
+    margin-bottom: 35px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+
+.blog-content h2 {
+    font-size: 32px;
+
+    line-height: 1.3;
+
+    margin-bottom: 22px;
+}
+
+
+.blog-content h2 a:hover {
+    color: #555555;
+}
+
+
+.post-date {
+    font-size: 16px;
+
+    margin-bottom: 42px;
+
+    color: #333333;
+}
+
+
+.post-image-link {
+    display: block;
+
+    overflow: hidden;
+}
+
+
+.post-image {
+    width: 100%;
+
+    height: auto;
+
+    display: block;
+
+    transition: transform 0.35s ease;
+}
+
+
+.post-image-link:hover .post-image {
+    transform: scale(1.02);
+}
+
+
+.post-excerpt {
+    font-size: 17px;
+
+    line-height: 1.7;
+
+    margin-top: 25px;
+
+    color: #333333;
+}
+
+
+.read-more {
+    display: inline-block;
+
+    margin-top: 25px;
+
+    font-weight: 700;
+
+    font-size: 14px;
+
+    border-bottom: 2px solid #111111;
+
+    padding-bottom: 4px;
+}
+
+
+.read-more:hover {
+    color: #777777;
+
+    border-color: #777777;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.site-footer {
+    background: #111111;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 30px 20px;
+
+    font-size: 14px;
+}
+
+
+/* =========================================
+   MOBILE HEADER
+========================================= */
+
+.mobile-header {
+    display: none;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        transform: translateX(-100%);
+
+        transition: transform 0.3s ease;
+
+        width: 280px;
+
+        padding-top: 100px;
+    }
+
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+
+    .main-content {
+        margin-left: 0;
+    }
+
+
+    .mobile-header {
+        position: sticky;
+
+        top: 0;
+
+        height: 65px;
+
+        background: #111111;
+
+        color: white;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding: 0 20px;
+
+        z-index: 2000;
+    }
+
+
+    .mobile-logo {
+        font-size: 20px;
+
+        font-weight: 700;
+    }
+
+
+    .menu-toggle {
+        border: none;
+
+        background: transparent;
+
+        color: white;
+
+        font-size: 28px;
+
+        cursor: pointer;
+    }
+
+
+    .hero {
+        min-height: 470px;
+    }
+
+
+    .hero h1 {
+        font-size: 42px;
+    }
+
+
+    .hero p {
+        font-size: 15px;
+    }
+
+
+    .main-nav {
+        gap: 28px;
+
+        margin-top: 45px;
+    }
+
+
+    .main-nav a {
+        font-size: 14px;
+    }
+
+
+    .blog-area {
+        padding: 0 15px 50px;
+    }
+
+
+    .blog-card {
+        padding: 28px 20px 35px;
+    }
+
+
+    .blog-content h2 {
+        font-size: 25px;
+    }
+
+
+    .post-date {
+        margin-bottom: 25px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+    .hero {
+        min-height: 430px;
+    }
+
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+
+    .hero p {
+        font-size: 14px;
+
+        line-height: 1.55;
+    }
+
+
+    .main-nav {
+        gap: 20px;
+    }
+
+
+    .main-nav a {
+        font-size: 13px;
+    }
+
+
+    .blog-content h2 {
+        font-size: 23px;
+    }
+
+
+    .post-excerpt {
+        font-size: 15px;
+    }
+
+}
