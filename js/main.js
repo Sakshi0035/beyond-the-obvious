@@ -1,5 +1,6 @@
 /* =========================================
-   BEYOND THE OBVIOUS BLOG SYSTEM
+   BEYOND THE OBVIOUS
+   AUTOMATIC BLOGGER-STYLE POST SYSTEM
    GitHub Pages + GitHub API
 ========================================= */
 
@@ -18,7 +19,7 @@ const DEFAULT_POST_IMAGE =
 
 
 /* =========================================
-   MOBILE SIDEBAR
+   MOBILE MENU
 ========================================= */
 
 const menuToggle = document.getElementById("menuToggle");
@@ -40,7 +41,6 @@ if (menuToggle && sidebar) {
             "aria-label",
             isOpen ? "Close menu" : "Open menu"
         );
-
     });
 
 
@@ -59,17 +59,22 @@ if (menuToggle && sidebar) {
                 "aria-label",
                 "Open menu"
             );
-
         });
-
     });
-
 }
 
 
 /* =========================================
    HELPERS
 ========================================= */
+
+function cleanText(value) {
+
+    return String(value || "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
 
 function escapeHTML(value) {
 
@@ -83,11 +88,44 @@ function escapeHTML(value) {
 }
 
 
+/*
+ * IMPORTANT:
+ * encodeURIComponent() is required here because
+ * your Mārtāṇḍa post filename contains "?" and
+ * Unicode characters.
+ */
 function getPostURL(filename) {
 
     return (
         "posts/" +
         encodeURIComponent(filename)
+    );
+}
+
+
+/*
+ * Safely build a RAW GitHub URL from the API path.
+ *
+ * We intentionally DO NOT use file.download_url.
+ *
+ * GitHub's download_url can contain a literal "?"
+ * in a filename. In a browser URL, "?" starts the
+ * query string and can therefore break that filename.
+ *
+ * Encoding every path segment fixes that.
+ */
+function getSafeRawURL(file) {
+
+    const encodedPath =
+        file.path
+            .split("/")
+            .map(segment => encodeURIComponent(segment))
+            .join("/");
+
+    return (
+        `https://raw.githubusercontent.com/` +
+        `${REPO_OWNER}/${REPO_NAME}/` +
+        `${REPO_BRANCH}/${encodedPath}`
     );
 }
 
@@ -112,19 +150,6 @@ function getImageURL(imageSource, postURL) {
 
     try {
 
-        /*
-         * IMPORTANT:
-         * Images are resolved relative to the post file.
-         *
-         * src="../image.jpg"
-         * -> root image
-         *
-         * src="image.jpg"
-         * -> /posts/image.jpg
-         *
-         * This supports both without guessing.
-         */
-
         return new URL(
             imageSource,
             new URL(
@@ -142,16 +167,7 @@ function getImageURL(imageSource, postURL) {
         );
 
         return "";
-
     }
-}
-
-
-function cleanText(text) {
-
-    return (text || "")
-        .replace(/\s+/g, " ")
-        .trim();
 }
 
 
@@ -184,17 +200,13 @@ function formatDate(dateValue) {
 
 
 /* =========================================
-   DATE EXTRACTION
+   DATE FROM POST HTML
 ========================================= */
 
-function getDateFromPost(document) {
-
-    /*
-     * These are optional ways a post can
-     * provide its own published date.
-     */
+function getDateFromPost(postDocument) {
 
     const selectors = [
+        'meta[name="published-date"]',
         'meta[name="date"]',
         'meta[name="published"]',
         'meta[property="article:published_time"]',
@@ -205,7 +217,7 @@ function getDateFromPost(document) {
     for (const selector of selectors) {
 
         const element =
-            document.querySelector(selector);
+            postDocument.querySelector(selector);
 
         if (!element) {
             continue;
@@ -218,22 +230,28 @@ function getDateFromPost(document) {
             element.textContent;
 
         if (cleanText(value)) {
-            return cleanText(value);
+
+            const cleaned =
+                cleanText(value);
+
+            if (
+                /^\d{4}-\d{2}-\d{2}/.test(cleaned)
+            ) {
+                return formatDate(cleaned);
+            }
+
+            return cleaned;
         }
     }
-
-    /*
-     * Do NOT use a vague "By Sakshi · 2026"
-     * value as the actual date.
-     * The GitHub commit date will be used instead.
-     */
 
     return "";
 }
 
 
 /* =========================================
-   GITHUB POST DATE
+   GITHUB COMMIT DATE
+   Used automatically when a post has no
+   explicit published date.
 ========================================= */
 
 const dateCache = new Map();
@@ -253,7 +271,15 @@ async function getGitHubPostDate(filename) {
             `${REPO_API_BASE}/commits?path=${encodeURIComponent(path)}&per_page=1`;
 
         const response =
-            await fetch(apiURL);
+            await fetch(
+                apiURL,
+                {
+                    headers: {
+                        "Accept":
+                            "application/vnd.github+json"
+                    }
+                }
+            );
 
         if (!response.ok) {
             return "";
@@ -287,7 +313,7 @@ async function getGitHubPostDate(filename) {
     } catch (error) {
 
         console.warn(
-            "Could not get GitHub post date:",
+            "POST DATE ERROR:",
             filename,
             error
         );
@@ -309,14 +335,25 @@ async function readPost(file) {
             getPostURL(file.name);
 
         /*
-         * GitHub supplies a safe raw download URL.
-         * This is important for filenames containing
-         * Unicode characters, ":" or "?".
+         * THIS IS THE IMPORTANT FIX.
+         *
+         * Do not use:
+         *
+         * fetch(file.download_url)
+         *
+         * for your filename containing "?".
+         *
+         * Use a safely encoded RAW URL instead.
          */
+        const safeRawURL =
+            getSafeRawURL(file);
 
         const response =
             await fetch(
-                file.download_url
+                safeRawURL,
+                {
+                    cache: "no-store"
+                }
             );
 
         if (!response.ok) {
@@ -343,9 +380,7 @@ async function readPost(file) {
             );
 
 
-        /* =================================
-           TITLE
-        ================================= */
+        /* TITLE */
 
         const titleElement =
             postDocument.querySelector(
@@ -386,9 +421,7 @@ async function readPost(file) {
         }
 
 
-        /* =================================
-           CATEGORY
-        ================================= */
+        /* CATEGORY */
 
         const categoryElement =
             postDocument.querySelector(
@@ -409,9 +442,7 @@ async function readPost(file) {
                 : "BEYOND THE OBVIOUS";
 
 
-        /* =================================
-           IMAGE
-        ================================= */
+        /* IMAGE */
 
         const imageElement =
             postDocument.querySelector(
@@ -433,23 +464,18 @@ async function readPost(file) {
         }
 
         /*
-         * If a post has no featured image,
-         * use the blog's default banner.
-         *
-         * This guarantees every post card
-         * still has a visual thumbnail.
+         * If the post does not contain a featured
+         * image, use the site's banner as a safe
+         * thumbnail instead of leaving a blank card.
          */
 
         if (!image) {
-
             image =
                 DEFAULT_POST_IMAGE;
         }
 
 
-        /* =================================
-           EXCERPT
-        ================================= */
+        /* EXCERPT */
 
         const descriptionElement =
             postDocument.querySelector(
@@ -488,30 +514,24 @@ async function readPost(file) {
         }
 
 
-        /* =================================
-           SEARCH TEXT
-        ================================= */
+        /*
+         * SEARCH THE WHOLE ARTICLE,
+         * not just title/excerpt.
+         */
 
-        const searchableContent =
+        const searchText =
             cleanText(
                 postDocument.body?.textContent ||
                 ""
             );
 
 
-        /* =================================
-           DATE
-        ================================= */
+        /* DATE */
 
         let date =
             getDateFromPost(
                 postDocument
             );
-
-        /*
-         * If there is no exact published date
-         * in the HTML, use the GitHub commit date.
-         */
 
         if (!date) {
 
@@ -519,21 +539,6 @@ async function readPost(file) {
                 await getGitHubPostDate(
                     file.name
                 );
-
-        } else {
-
-            /*
-             * If it looks like an ISO date,
-             * format it nicely.
-             */
-
-            if (
-                /^\d{4}-\d{2}-\d{2}/.test(date)
-            ) {
-
-                date =
-                    formatDate(date);
-            }
         }
 
 
@@ -553,8 +558,7 @@ async function readPost(file) {
 
             excerpt: excerpt,
 
-            searchText: searchableContent
-
+            searchText: searchText
         };
 
     } catch (error) {
@@ -571,7 +575,7 @@ async function readPost(file) {
 
 
 /* =========================================
-   CREATE POST CARD
+   POST CARD
 ========================================= */
 
 function createPostCard(post) {
@@ -582,16 +586,15 @@ function createPostCard(post) {
     article.className =
         "blog-card";
 
-    article.dataset.search =
-        (
-            post.title +
-            " " +
-            post.category +
-            " " +
-            post.excerpt +
-            " " +
-            post.searchText
-        ).toLowerCase();
+    article.dataset.search = (
+        post.title +
+        " " +
+        post.category +
+        " " +
+        post.excerpt +
+        " " +
+        post.searchText
+    ).toLowerCase();
 
 
     article.innerHTML = `
@@ -601,22 +604,17 @@ function createPostCard(post) {
             <h2 class="blog-card-title">
 
                 <a href="${post.url}">
-
                     ${escapeHTML(post.title)}
-
                 </a>
 
             </h2>
-
 
             <button
                 class="post-share-button"
                 type="button"
                 aria-label="Share this article"
                 title="Share this article"
-            >
-                ↗
-            </button>
+            >↗</button>
 
         </div>
 
@@ -652,16 +650,9 @@ function createPostCard(post) {
 
             <div class="blog-card-text">
 
-                ${
-                    post.category
-                        ? `
-                            <p class="blog-card-category">
-                                ${escapeHTML(post.category)}
-                            </p>
-                        `
-                        : ""
-                }
-
+                <p class="blog-card-category">
+                    ${escapeHTML(post.category)}
+                </p>
 
                 ${
                     post.excerpt
@@ -687,12 +678,9 @@ function createPostCard(post) {
             <a
                 href="${post.url}"
                 class="read-more"
-            >
-                READ MORE
-            </a>
+            >READ MORE</a>
 
         </div>
-
     `;
 
 
@@ -707,16 +695,11 @@ function createPostCard(post) {
             "click",
             async () => {
 
-                const shareData = {
-
-                    title: post.title,
-
-                    url: new URL(
+                const shareURL =
+                    new URL(
                         post.url,
                         window.location.href
-                    ).href
-
-                };
+                    ).href;
 
                 try {
 
@@ -724,14 +707,15 @@ function createPostCard(post) {
                         navigator.share
                     ) {
 
-                        await navigator.share(
-                            shareData
-                        );
+                        await navigator.share({
+                            title: post.title,
+                            url: shareURL
+                        });
 
                     } else {
 
                         await navigator.clipboard.writeText(
-                            shareData.url
+                            shareURL
                         );
 
                         shareButton.textContent =
@@ -746,25 +730,54 @@ function createPostCard(post) {
                     }
 
                 } catch (error) {
-
-                    /*
-                     * User cancelled sharing.
-                     * No visible error is necessary.
-                     */
-
+                    // User cancelled sharing.
                 }
-
             }
         );
     }
-
 
     return article;
 }
 
 
 /* =========================================
-   DISPLAY POSTS
+   SORT
+========================================= */
+
+function sortPosts(posts) {
+
+    return [...posts].sort(
+        (a, b) => {
+
+            const dateA =
+                Date.parse(a.date);
+
+            const dateB =
+                Date.parse(b.date);
+
+            if (
+                !Number.isNaN(dateA) &&
+                !Number.isNaN(dateB)
+            ) {
+                return dateB - dateA;
+            }
+
+            if (!Number.isNaN(dateA)) {
+                return -1;
+            }
+
+            if (!Number.isNaN(dateB)) {
+                return 1;
+            }
+
+            return 0;
+        }
+    );
+}
+
+
+/* =========================================
+   DISPLAY
 ========================================= */
 
 function displayPosts(posts) {
@@ -785,7 +798,6 @@ function displayPosts(posts) {
 
     postsContainer.innerHTML = "";
 
-
     if (!posts.length) {
 
         if (noPostsMessage) {
@@ -795,67 +807,16 @@ function displayPosts(posts) {
         return;
     }
 
-
     if (noPostsMessage) {
         noPostsMessage.hidden = true;
     }
-
 
     posts.forEach(post => {
 
         postsContainer.appendChild(
             createPostCard(post)
         );
-
     });
-}
-
-
-/* =========================================
-   SORT POSTS
-========================================= */
-
-function sortPosts(posts) {
-
-    /*
-     * Posts with a real date are placed first,
-     * newest date first.
-     */
-
-    return [...posts].sort(
-        (a, b) => {
-
-            const dateA =
-                Date.parse(a.date);
-
-            const dateB =
-                Date.parse(b.date);
-
-            if (
-                !Number.isNaN(dateA) &&
-                !Number.isNaN(dateB)
-            ) {
-
-                return dateB - dateA;
-            }
-
-            if (
-                !Number.isNaN(dateA)
-            ) {
-
-                return -1;
-            }
-
-            if (
-                !Number.isNaN(dateB)
-            ) {
-
-                return 1;
-            }
-
-            return 0;
-        }
-    );
 }
 
 
@@ -896,33 +857,32 @@ function setupSearch() {
                 allPosts.filter(
                     post => {
 
-                        return post.searchText
-                            .toLowerCase()
-                            .includes(query) ||
-                            post.title
-                                .toLowerCase()
-                                .includes(query) ||
-                            post.category
-                                .toLowerCase()
-                                .includes(query) ||
-                            post.excerpt
-                                .toLowerCase()
-                                .includes(query);
+                        const text =
+                            (
+                                post.title +
+                                " " +
+                                post.category +
+                                " " +
+                                post.excerpt +
+                                " " +
+                                post.searchText
+                            ).toLowerCase();
 
+                        return text.includes(query);
                     }
                 );
 
             displayPosts(
                 filteredPosts
             );
-
         }
     );
 }
 
 
 /* =========================================
-   LOAD ALL POSTS FROM /posts/
+   LOAD EVERY .HTML FILE DIRECTLY INSIDE
+   /posts/
 ========================================= */
 
 let allPosts = [];
@@ -952,7 +912,8 @@ async function loadPosts() {
                     headers: {
                         "Accept":
                             "application/vnd.github+json"
-                    }
+                    },
+                    cache: "no-store"
                 }
             );
 
@@ -966,9 +927,12 @@ async function loadPosts() {
         const files =
             await response.json();
 
+
         /*
-         * ONLY HTML files directly inside
-         * /posts/ are treated as blog posts.
+         * EVERY HTML FILE directly in /posts/
+         * becomes a blog post.
+         *
+         * No manual index.html editing required.
          */
 
         const postFiles =
@@ -980,22 +944,6 @@ async function loadPosts() {
                     )
             );
 
-
-        if (!postFiles.length) {
-
-            if (loadingMessage) {
-                loadingMessage.remove();
-            }
-
-            displayPosts([]);
-
-            return;
-        }
-
-
-        /*
-         * Read all posts in parallel.
-         */
 
         const loadedPosts =
             await Promise.all(
@@ -1010,10 +958,6 @@ async function loadPosts() {
                 Boolean
             );
 
-
-        /*
-         * Newest published/commit date first.
-         */
 
         allPosts =
             sortPosts(
@@ -1032,6 +976,7 @@ async function loadPosts() {
 
 
         setupSearch();
+
 
     } catch (error) {
 
@@ -1055,46 +1000,8 @@ async function loadPosts() {
                     </p>
 
                 </div>
-
             `;
-
         }
-
-    }
-}
-
-
-/* =========================================
-   AUTO DATE FOR INDIVIDUAL POST PAGES
-========================================= */
-
-async function hydrateIndividualPostDate() {
-
-    const dateElement =
-        document.querySelector(
-            "[data-auto-post-date]"
-        );
-
-    if (!dateElement) {
-        return;
-    }
-
-    const filename =
-        document.body.dataset.postFile;
-
-    if (!filename) {
-        return;
-    }
-
-    const date =
-        await getGitHubPostDate(
-            filename
-        );
-
-    if (date) {
-
-        dateElement.textContent =
-            date;
     }
 }
 
@@ -1104,5 +1011,3 @@ async function hydrateIndividualPostDate() {
 ========================================= */
 
 loadPosts();
-
-hydrateIndividualPostDate();
