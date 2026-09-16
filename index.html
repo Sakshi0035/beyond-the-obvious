@@ -2,13 +2,9 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Beyond The Obvious | Sakshi Madgundi</title>
 
@@ -17,72 +13,37 @@
         content="Beyond The Obvious — stories, ideas, personal experiences and things worth thinking about."
     >
 
-    <meta
-        name="author"
-        content="Sakshi Madgundi"
-    >
+    <meta name="author" content="Sakshi Madgundi">
 
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
-
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 
 <body>
 
-
-<!-- =========================================
-     MOBILE HEADER
-========================================= -->
-
 <header class="mobile-header">
-
-    <a
-        href="index.html"
-        class="mobile-logo"
-    >
-        Beyond The Obvious
-    </a>
-
+    <a href="index.html" class="mobile-logo">Beyond The Obvious</a>
 
     <button
         class="menu-toggle"
         id="menuToggle"
+        type="button"
         aria-label="Open menu"
+        aria-expanded="false"
     >
         ☰
     </button>
-
 </header>
 
-
-
-<!-- =========================================
-     SIDEBAR
-========================================= -->
-
-<aside
-    class="sidebar"
-    id="sidebar"
->
-
+<aside class="sidebar" id="sidebar">
 
     <div class="profile">
-
-
         <img
             src="image (1).png"
             alt="Sakshi Madgundi"
             class="profile-image"
         >
 
-
-        <h3>
-            SAKSHI MADGUNDI
-        </h3>
-
+        <h3>SAKSHI MADGUNDI</h3>
 
         <a
             href="https://github.com/Sakshi0035"
@@ -92,19 +53,9 @@
         >
             VISIT PROFILE
         </a>
-
-
     </div>
 
-
-
-    <!-- =====================================
-         SOCIAL / OTHER LINKS
-    ====================================== -->
-
     <div class="sidebar-social">
-
-
         <a
             href="https://github.com/Sakshi0035"
             target="_blank"
@@ -112,7 +63,6 @@
         >
             GitHub
         </a>
-
 
         <a
             href="https://www.youtube.com/@sakshimeandmyself"
@@ -122,7 +72,6 @@
             YouTube
         </a>
 
-
         <a
             href="https://echopaths.gumroad.com/"
             target="_blank"
@@ -130,224 +79,86 @@
         >
             My Ebooks
         </a>
-
-
     </div>
-
 
 </aside>
 
-
-
-<!-- =========================================
-     MAIN CONTENT
-========================================= -->
-
 <main class="main-content">
 
-
-
-    <!-- =====================================
-         HERO / BANNER
-    ====================================== -->
-
-    <section
-        class="hero"
-        style="
-            background-image: url('9418154f-5bd5-40df-ac7f-bb1df30525b4.png') !important;
-            background-position: center center !important;
-            background-size: cover !important;
-            background-repeat: no-repeat !important;
-        "
-    >
-
+    <section class="hero">
 
         <div class="hero-overlay">
 
-
-            <h1>
-                Beyond The Obvious
-            </h1>
-
+            <h1>Beyond The Obvious</h1>
 
             <p>
-                This blog is dedicated to stories, ideas,
-                experiences and things worth thinking about.
-                From education and careers to creativity,
-                ambition and life, this is a space to look
+                This blog is dedicated to stories, ideas, experiences and
+                things worth thinking about. From education and careers to
+                creativity, ambition and life, this is a space to look
                 beyond what's obvious.
             </p>
 
+            <div class="hero-nav-row">
 
+                <nav class="main-nav" aria-label="Main navigation">
+                    <a href="index.html">HOME</a>
+                    <a href="about.html">ABOUT</a>
+                    <a href="contact.html">CONTACT</a>
+                </nav>
 
-            <!-- =================================
-                 NAVIGATION
-            ================================== -->
+                <div class="hero-search">
+                    <label for="blogSearch" class="sr-only">
+                        Search articles
+                    </label>
 
-            <nav class="main-nav">
-
-
-                <a href="index.html">
-                    HOME
-                </a>
-
-
-                <a href="about.html">
-                    ABOUT
-                </a>
-
-
-                <a href="contact.html">
-                    CONTACT
-                </a>
-
-
-            </nav>
-
-
-        </div>
-
-
-    </section>
-
-
-
-
-    <!-- =========================================
-         BLOG POSTS + SEARCH
-    ========================================== -->
-
-    <section class="blog-area">
-
-
-        <div class="blog-container">
-
-
-
-            <!-- =================================
-                 SEARCH BAR
-            ================================== -->
-
-            <div
-                class="blog-search"
-                style="
-                    width: 100%;
-                    max-width: 760px;
-                    margin: 0 auto 35px;
-                    position: relative;
-                "
-            >
-
-                <input
-                    type="search"
-                    id="blogSearch"
-                    placeholder="Search articles..."
-                    autocomplete="off"
-                    aria-label="Search articles"
-                    style="
-                        width: 100%;
-                        height: 52px;
-                        box-sizing: border-box;
-                        padding: 0 22px;
-                        border: 1px solid #d8d8d8;
-                        border-radius: 50px;
-                        background: #ffffff;
-                        color: #111111;
-                        font-size: 16px;
-                        font-family: inherit;
-                        outline: none;
-                        box-shadow: 0 5px 20px rgba(0,0,0,0.06);
-                    "
-                >
-
-            </div>
-
-
-
-            <!-- =================================
-                 AUTOMATIC POSTS
-            ================================== -->
-
-            <div
-                id="posts-container"
-                class="posts-grid"
-                style="
-                    width: 100%;
-                "
-            >
-
-                <div
-                    id="posts-loading"
-                    style="
-                        width: 100%;
-                        text-align: center;
-                        padding: 50px 20px;
-                        font-size: 16px;
-                        color: #777;
-                    "
-                >
-                    Loading articles...
+                    <input
+                        type="search"
+                        id="blogSearch"
+                        placeholder="Search articles..."
+                        autocomplete="off"
+                        aria-label="Search articles"
+                    >
                 </div>
 
             </div>
 
-
-
-            <!-- =================================
-                 NO SEARCH RESULTS
-            ================================== -->
-
-            <div
-                id="no-posts-message"
-                style="
-                    display: none;
-                    width: 100%;
-                    text-align: center;
-                    padding: 50px 20px;
-                    color: #777;
-                    font-size: 16px;
-                "
-            >
-
-                No articles found.
-
-            </div>
-
-
         </div>
-
 
     </section>
 
+    <section class="blog-area">
 
+        <div class="blog-container">
 
+            <div
+                id="posts-container"
+                class="posts-list"
+                aria-live="polite"
+            >
+                <div id="posts-loading" class="posts-loading">
+                    Loading articles...
+                </div>
+            </div>
 
-    <!-- =========================================
-         FOOTER
-    ========================================== -->
+            <div
+                id="no-posts-message"
+                class="no-posts-message"
+                hidden
+            >
+                No articles found.
+            </div>
+
+        </div>
+
+    </section>
 
     <footer class="site-footer">
-
-
-        <p>
-            © 2026 Beyond The Obvious · Sakshi Madgundi
-        </p>
-
-
+        <p>© 2026 Beyond The Obvious · Sakshi Madgundi</p>
     </footer>
-
 
 </main>
 
-
-
-<!-- =========================================
-     EXISTING SIDEBAR + AUTOMATIC BLOG SYSTEM
-========================================= -->
-
 <script src="js/main.js"></script>
 
-
 </body>
-
 </html>
