@@ -1,4 +1,23 @@
 /* =========================================
+   BEYOND THE OBVIOUS BLOG SYSTEM
+   GitHub Pages + GitHub API
+========================================= */
+
+const REPO_OWNER = "Sakshi0035";
+const REPO_NAME = "beyond-the-obvious";
+const REPO_BRANCH = "main";
+
+const POSTS_API =
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/posts?ref=${REPO_BRANCH}`;
+
+const REPO_API_BASE =
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
+
+const DEFAULT_POST_IMAGE =
+    "9418154f-5bd5-40df-ac7f-bb1df30525b4.png";
+
+
+/* =========================================
    MOBILE SIDEBAR
 ========================================= */
 
@@ -9,7 +28,18 @@ if (menuToggle && sidebar) {
 
     menuToggle.addEventListener("click", () => {
 
-        sidebar.classList.toggle("open");
+        const isOpen =
+            sidebar.classList.toggle("open");
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            String(isOpen)
+        );
+
+        menuToggle.setAttribute(
+            "aria-label",
+            isOpen ? "Close menu" : "Open menu"
+        );
 
     });
 
@@ -20,6 +50,16 @@ if (menuToggle && sidebar) {
 
             sidebar.classList.remove("open");
 
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            menuToggle.setAttribute(
+                "aria-label",
+                "Open menu"
+            );
+
         });
 
     });
@@ -27,34 +67,8 @@ if (menuToggle && sidebar) {
 }
 
 
-
 /* =========================================
-   AUTOMATIC BLOG POST LOADER
-========================================= */
-
-const postsContainer =
-    document.getElementById("posts-container");
-
-const searchInput =
-    document.getElementById("blogSearch");
-
-const loadingMessage =
-    document.getElementById("posts-loading");
-
-const noPostsMessage =
-    document.getElementById("no-posts-message");
-
-
-const POSTS_API =
-    "https://api.github.com/repos/Sakshi0035/beyond-the-obvious/contents/posts?ref=main";
-
-
-let allPosts = [];
-
-
-
-/* =========================================
-   ESCAPE HTML
+   HELPERS
 ========================================= */
 
 function escapeHTML(value) {
@@ -66,14 +80,8 @@ function escapeHTML(value) {
         value || "";
 
     return div.innerHTML;
-
 }
 
-
-
-/* =========================================
-   CREATE POST URL
-========================================= */
 
 function getPostURL(filename) {
 
@@ -81,58 +89,41 @@ function getPostURL(filename) {
         "posts/" +
         encodeURIComponent(filename)
     );
-
 }
 
-
-
-/* =========================================
-   CREATE IMAGE URL
-========================================= */
 
 function getImageURL(imageSource, postURL) {
 
     if (!imageSource) {
-
         return "";
-
     }
-
 
     imageSource =
         imageSource.trim();
 
-
-    /* Absolute image URL */
-
     if (
         imageSource.startsWith("http://") ||
         imageSource.startsWith("https://") ||
-        imageSource.startsWith("data:")
+        imageSource.startsWith("data:") ||
+        imageSource.startsWith("blob:")
     ) {
-
         return imageSource;
-
     }
 
-
-    /*
-     * Resolve the image relative to the
-     * actual blog post.
-     *
-     * Example:
-     *
-     * posts/post.html
-     * posts/image.jpg
-     *
-     * src="image.jpg"
-     *
-     * becomes:
-     *
-     * /beyond-the-obvious/posts/image.jpg
-     */
-
     try {
+
+        /*
+         * IMPORTANT:
+         * Images are resolved relative to the post file.
+         *
+         * src="../image.jpg"
+         * -> root image
+         *
+         * src="image.jpg"
+         * -> /posts/image.jpg
+         *
+         * This supports both without guessing.
+         */
 
         return new URL(
             imageSource,
@@ -153,37 +144,174 @@ function getImageURL(imageSource, postURL) {
         return "";
 
     }
-
 }
 
 
+function cleanText(text) {
+
+    return (text || "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+
+function formatDate(dateValue) {
+
+    if (!dateValue) {
+        return "";
+    }
+
+    const date =
+        new Date(dateValue);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return cleanText(dateValue);
+    }
+
+    return new Intl.DateTimeFormat(
+        "en-US",
+        {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        }
+    ).format(date);
+}
+
 
 /* =========================================
-   READ ONE BLOG POST
+   DATE EXTRACTION
+========================================= */
+
+function getDateFromPost(document) {
+
+    /*
+     * These are optional ways a post can
+     * provide its own published date.
+     */
+
+    const selectors = [
+        'meta[name="date"]',
+        'meta[name="published"]',
+        'meta[property="article:published_time"]',
+        "time[datetime]",
+        "[data-published-date]"
+    ];
+
+    for (const selector of selectors) {
+
+        const element =
+            document.querySelector(selector);
+
+        if (!element) {
+            continue;
+        }
+
+        const value =
+            element.getAttribute("content") ||
+            element.getAttribute("datetime") ||
+            element.getAttribute("data-published-date") ||
+            element.textContent;
+
+        if (cleanText(value)) {
+            return cleanText(value);
+        }
+    }
+
+    /*
+     * Do NOT use a vague "By Sakshi · 2026"
+     * value as the actual date.
+     * The GitHub commit date will be used instead.
+     */
+
+    return "";
+}
+
+
+/* =========================================
+   GITHUB POST DATE
+========================================= */
+
+const dateCache = new Map();
+
+async function getGitHubPostDate(filename) {
+
+    if (dateCache.has(filename)) {
+        return dateCache.get(filename);
+    }
+
+    try {
+
+        const path =
+            `posts/${filename}`;
+
+        const apiURL =
+            `${REPO_API_BASE}/commits?path=${encodeURIComponent(path)}&per_page=1`;
+
+        const response =
+            await fetch(apiURL);
+
+        if (!response.ok) {
+            return "";
+        }
+
+        const commits =
+            await response.json();
+
+        if (
+            !Array.isArray(commits) ||
+            !commits.length
+        ) {
+            return "";
+        }
+
+        const rawDate =
+            commits[0]?.commit?.author?.date ||
+            commits[0]?.commit?.committer?.date ||
+            "";
+
+        const formatted =
+            formatDate(rawDate);
+
+        dateCache.set(
+            filename,
+            formatted
+        );
+
+        return formatted;
+
+    } catch (error) {
+
+        console.warn(
+            "Could not get GitHub post date:",
+            filename,
+            error
+        );
+
+        return "";
+    }
+}
+
+
+/* =========================================
+   READ ONE POST
 ========================================= */
 
 async function readPost(file) {
 
     try {
 
-        /*
-         * Browser URL for the article
-         */
-
         const postURL =
             getPostURL(file.name);
 
-
         /*
-         * GitHub's raw download URL.
-         *
-         * This safely handles filenames containing:
-         *
-         * :
-         * ?
-         * ā
-         * ḍ
-         * etc.
+         * GitHub supplies a safe raw download URL.
+         * This is important for filenames containing
+         * Unicode characters, ":" or "?".
          */
 
         const response =
@@ -191,33 +319,28 @@ async function readPost(file) {
                 file.download_url
             );
 
-
         if (!response.ok) {
 
             console.error(
-                "Could not read:",
-                file.name
+                "Could not read post:",
+                file.name,
+                response.status
             );
 
             return null;
-
         }
-
 
         const html =
             await response.text();
 
-
         const parser =
             new DOMParser();
-
 
         const postDocument =
             parser.parseFromString(
                 html,
                 "text/html"
             );
-
 
 
         /* =================================
@@ -241,12 +364,12 @@ async function readPost(file) {
                 "title"
             );
 
-
         let title =
             titleElement
-                ? titleElement.textContent.trim()
+                ? cleanText(
+                    titleElement.textContent
+                )
                 : "";
-
 
         if (!title) {
 
@@ -260,9 +383,7 @@ async function readPost(file) {
                         /[-_]/g,
                         " "
                     );
-
         }
-
 
 
         /* =================================
@@ -280,39 +401,16 @@ async function readPost(file) {
                 ".blog-category"
             );
 
-
         const category =
             categoryElement
-                ? categoryElement.textContent.trim()
+                ? cleanText(
+                    categoryElement.textContent
+                )
                 : "BEYOND THE OBVIOUS";
 
 
-
         /* =================================
-           DATE
-        ================================= */
-
-        const dateElement =
-            postDocument.querySelector(
-                ".post-meta"
-            ) ||
-            postDocument.querySelector(
-                ".blog-card-meta"
-            ) ||
-            postDocument.querySelector(
-                ".blog-date"
-            );
-
-
-        const date =
-            dateElement
-                ? dateElement.textContent.trim()
-                : "";
-
-
-
-        /* =================================
-           FEATURED IMAGE
+           IMAGE
         ================================= */
 
         const imageElement =
@@ -323,26 +421,30 @@ async function readPost(file) {
                 "article img"
             );
 
-
         let image = "";
-
 
         if (imageElement) {
 
-            const imageSource =
-                imageElement.getAttribute(
-                    "src"
-                );
-
-
             image =
                 getImageURL(
-                    imageSource,
+                    imageElement.getAttribute("src"),
                     postURL
                 );
-
         }
 
+        /*
+         * If a post has no featured image,
+         * use the blog's default banner.
+         *
+         * This guarantees every post card
+         * still has a visual thumbnail.
+         */
+
+        if (!image) {
+
+            image =
+                DEFAULT_POST_IMAGE;
+        }
 
 
         /* =================================
@@ -354,16 +456,14 @@ async function readPost(file) {
                 'meta[name="description"]'
             );
 
-
         let excerpt =
             descriptionElement
-                ? (
+                ? cleanText(
                     descriptionElement.getAttribute(
                         "content"
-                    ) || ""
-                ).trim()
+                    )
+                )
                 : "";
-
 
         if (!excerpt) {
 
@@ -378,16 +478,63 @@ async function readPost(file) {
                     "article p"
                 );
 
-
             if (firstParagraph) {
 
                 excerpt =
-                    firstParagraph.textContent.trim();
-
+                    cleanText(
+                        firstParagraph.textContent
+                    );
             }
-
         }
 
+
+        /* =================================
+           SEARCH TEXT
+        ================================= */
+
+        const searchableContent =
+            cleanText(
+                postDocument.body?.textContent ||
+                ""
+            );
+
+
+        /* =================================
+           DATE
+        ================================= */
+
+        let date =
+            getDateFromPost(
+                postDocument
+            );
+
+        /*
+         * If there is no exact published date
+         * in the HTML, use the GitHub commit date.
+         */
+
+        if (!date) {
+
+            date =
+                await getGitHubPostDate(
+                    file.name
+                );
+
+        } else {
+
+            /*
+             * If it looks like an ISO date,
+             * format it nicely.
+             */
+
+            if (
+                /^\d{4}-\d{2}-\d{2}/.test(date)
+            ) {
+
+                date =
+                    formatDate(date);
+            }
+        }
 
 
         return {
@@ -404,30 +551,27 @@ async function readPost(file) {
 
             image: image,
 
-            excerpt: excerpt
+            excerpt: excerpt,
+
+            searchText: searchableContent
 
         };
-
-
 
     } catch (error) {
 
         console.error(
-            "POST LOADING ERROR:",
+            "Could not load post:",
             file.name,
             error
         );
 
         return null;
-
     }
-
 }
 
 
-
 /* =========================================
-   CREATE BLOG CARD
+   CREATE POST CARD
 ========================================= */
 
 function createPostCard(post) {
@@ -435,57 +579,26 @@ function createPostCard(post) {
     const article =
         document.createElement("article");
 
-
     article.className =
         "blog-card";
 
-
-    article.dataset.search = (
-
-        post.title +
-        " " +
-        post.category +
-        " " +
-        post.excerpt
-
-    ).toLowerCase();
-
+    article.dataset.search =
+        (
+            post.title +
+            " " +
+            post.category +
+            " " +
+            post.excerpt +
+            " " +
+            post.searchText
+        ).toLowerCase();
 
 
     article.innerHTML = `
 
+        <div class="blog-card-header">
 
-        ${
-            post.image
-                ? `
-                    <a
-                        href="${post.url}"
-                        class="blog-card-image-link"
-                    >
-
-                        <img
-                            src="${post.image}"
-                            alt="${escapeHTML(post.title)}"
-                            class="blog-card-image"
-                        >
-
-                    </a>
-                `
-                : ""
-        }
-
-
-        <div class="blog-card-content">
-
-
-            <p class="blog-category">
-
-                ${escapeHTML(post.category)}
-
-            </p>
-
-
-            <h2>
+            <h2 class="blog-card-title">
 
                 <a href="${post.url}">
 
@@ -496,57 +609,158 @@ function createPostCard(post) {
             </h2>
 
 
+            <button
+                class="post-share-button"
+                type="button"
+                aria-label="Share this article"
+                title="Share this article"
+            >
+                ↗
+            </button>
+
+        </div>
+
+
+        <div class="blog-card-meta">
+
             ${
-                post.excerpt
-                    ? `
-                        <p class="blog-excerpt">
-
-                            ${escapeHTML(post.excerpt)}
-
-                        </p>
-                    `
-                    : ""
+                post.date
+                    ? `- ${escapeHTML(post.date)}`
+                    : "- Published on Beyond The Obvious"
             }
 
+        </div>
 
-            <div class="blog-card-footer">
 
+        <div class="blog-card-body">
+
+            <a
+                href="${post.url}"
+                class="blog-card-image-link"
+                aria-label="Read ${escapeHTML(post.title)}"
+            >
+
+                <img
+                    src="${post.image}"
+                    alt="${escapeHTML(post.title)}"
+                    class="blog-card-image"
+                    loading="lazy"
+                >
+
+            </a>
+
+
+            <div class="blog-card-text">
 
                 ${
-                    post.date
+                    post.category
                         ? `
-                            <span class="blog-date">
-
-                                ${escapeHTML(post.date)}
-
-                            </span>
+                            <p class="blog-card-category">
+                                ${escapeHTML(post.category)}
+                            </p>
                         `
                         : ""
                 }
 
 
-                <a
-                    href="${post.url}"
-                    class="read-more"
-                >
-
-                    READ ARTICLE →
-
-                </a>
-
+                ${
+                    post.excerpt
+                        ? `
+                            <p class="blog-card-excerpt">
+                                ${escapeHTML(post.excerpt)}
+                            </p>
+                        `
+                        : ""
+                }
 
             </div>
 
+        </div>
+
+
+        <div class="blog-card-footer">
+
+            <span class="post-comment-link">
+                Article
+            </span>
+
+            <a
+                href="${post.url}"
+                class="read-more"
+            >
+                READ MORE
+            </a>
 
         </div>
 
     `;
 
 
+    const shareButton =
+        article.querySelector(
+            ".post-share-button"
+        );
+
+    if (shareButton) {
+
+        shareButton.addEventListener(
+            "click",
+            async () => {
+
+                const shareData = {
+
+                    title: post.title,
+
+                    url: new URL(
+                        post.url,
+                        window.location.href
+                    ).href
+
+                };
+
+                try {
+
+                    if (
+                        navigator.share
+                    ) {
+
+                        await navigator.share(
+                            shareData
+                        );
+
+                    } else {
+
+                        await navigator.clipboard.writeText(
+                            shareData.url
+                        );
+
+                        shareButton.textContent =
+                            "✓";
+
+                        setTimeout(() => {
+
+                            shareButton.textContent =
+                                "↗";
+
+                        }, 1500);
+                    }
+
+                } catch (error) {
+
+                    /*
+                     * User cancelled sharing.
+                     * No visible error is necessary.
+                     */
+
+                }
+
+            }
+        );
+    }
+
+
     return article;
-
 }
-
 
 
 /* =========================================
@@ -555,12 +769,19 @@ function createPostCard(post) {
 
 function displayPosts(posts) {
 
+    const postsContainer =
+        document.getElementById(
+            "posts-container"
+        );
+
+    const noPostsMessage =
+        document.getElementById(
+            "no-posts-message"
+        );
+
     if (!postsContainer) {
-
         return;
-
     }
-
 
     postsContainer.innerHTML = "";
 
@@ -568,22 +789,15 @@ function displayPosts(posts) {
     if (!posts.length) {
 
         if (noPostsMessage) {
-
-            noPostsMessage.style.display =
-                "block";
-
+            noPostsMessage.hidden = false;
         }
 
         return;
-
     }
 
 
     if (noPostsMessage) {
-
-        noPostsMessage.style.display =
-            "none";
-
+        noPostsMessage.hidden = true;
     }
 
 
@@ -594,105 +808,230 @@ function displayPosts(posts) {
         );
 
     });
-
 }
 
 
+/* =========================================
+   SORT POSTS
+========================================= */
+
+function sortPosts(posts) {
+
+    /*
+     * Posts with a real date are placed first,
+     * newest date first.
+     */
+
+    return [...posts].sort(
+        (a, b) => {
+
+            const dateA =
+                Date.parse(a.date);
+
+            const dateB =
+                Date.parse(b.date);
+
+            if (
+                !Number.isNaN(dateA) &&
+                !Number.isNaN(dateB)
+            ) {
+
+                return dateB - dateA;
+            }
+
+            if (
+                !Number.isNaN(dateA)
+            ) {
+
+                return -1;
+            }
+
+            if (
+                !Number.isNaN(dateB)
+            ) {
+
+                return 1;
+            }
+
+            return 0;
+        }
+    );
+}
+
 
 /* =========================================
-   LOAD ALL POSTS
+   SEARCH
 ========================================= */
+
+function setupSearch() {
+
+    const searchInput =
+        document.getElementById(
+            "blogSearch"
+        );
+
+    if (!searchInput) {
+        return;
+    }
+
+    searchInput.addEventListener(
+        "input",
+        () => {
+
+            const query =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+            if (!query) {
+
+                displayPosts(
+                    allPosts
+                );
+
+                return;
+            }
+
+            const filteredPosts =
+                allPosts.filter(
+                    post => {
+
+                        return post.searchText
+                            .toLowerCase()
+                            .includes(query) ||
+                            post.title
+                                .toLowerCase()
+                                .includes(query) ||
+                            post.category
+                                .toLowerCase()
+                                .includes(query) ||
+                            post.excerpt
+                                .toLowerCase()
+                                .includes(query);
+
+                    }
+                );
+
+            displayPosts(
+                filteredPosts
+            );
+
+        }
+    );
+}
+
+
+/* =========================================
+   LOAD ALL POSTS FROM /posts/
+========================================= */
+
+let allPosts = [];
 
 async function loadPosts() {
 
+    const postsContainer =
+        document.getElementById(
+            "posts-container"
+        );
+
+    const loadingMessage =
+        document.getElementById(
+            "posts-loading"
+        );
+
     if (!postsContainer) {
-
         return;
-
     }
-
 
     try {
 
         const response =
             await fetch(
-                POSTS_API
+                POSTS_API,
+                {
+                    headers: {
+                        "Accept":
+                            "application/vnd.github+json"
+                    }
+                }
             );
-
 
         if (!response.ok) {
 
             throw new Error(
-                "GitHub API error: " +
-                response.status
+                `GitHub API returned ${response.status}`
             );
-
         }
-
 
         const files =
             await response.json();
 
-
         /*
-         * Only .html files from /posts/
+         * ONLY HTML files directly inside
+         * /posts/ are treated as blog posts.
          */
 
         const postFiles =
-            files.filter(file => {
-
-                return (
-
+            files.filter(
+                file =>
                     file.type === "file" &&
-
                     /\.html$/i.test(
                         file.name
                     )
+            );
 
-                );
 
-            });
+        if (!postFiles.length) {
+
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
+
+            displayPosts([]);
+
+            return;
+        }
 
 
         /*
-         * Read every post
+         * Read all posts in parallel.
          */
 
         const loadedPosts =
             await Promise.all(
-
                 postFiles.map(
                     readPost
                 )
-
             );
 
 
         allPosts =
             loadedPosts.filter(
-                post => post !== null
+                Boolean
             );
 
 
         /*
-         * Remove loading message
+         * Newest published/commit date first.
          */
+
+        allPosts =
+            sortPosts(
+                allPosts
+            );
+
 
         if (loadingMessage) {
-
             loadingMessage.remove();
-
         }
 
-
-        /*
-         * Show posts
-         */
 
         displayPosts(
             allPosts
         );
 
+
+        setupSearch();
 
     } catch (error) {
 
@@ -701,18 +1040,11 @@ async function loadPosts() {
             error
         );
 
-
         if (loadingMessage) {
 
             loadingMessage.innerHTML = `
 
-                <div
-                    style="
-                        text-align:center;
-                        padding:40px 20px;
-                        color:#777;
-                    "
-                >
+                <div class="posts-error">
 
                     <h3>
                         Articles could not be loaded.
@@ -729,81 +1061,48 @@ async function loadPosts() {
         }
 
     }
-
 }
 
 
-
 /* =========================================
-   BLOG SEARCH
+   AUTO DATE FOR INDIVIDUAL POST PAGES
 ========================================= */
 
-if (searchInput) {
+async function hydrateIndividualPostDate() {
 
-    searchInput.addEventListener(
-        "input",
-        function () {
+    const dateElement =
+        document.querySelector(
+            "[data-auto-post-date]"
+        );
 
-            const searchTerm =
-                this.value
-                    .trim()
-                    .toLowerCase();
+    if (!dateElement) {
+        return;
+    }
 
+    const filename =
+        document.body.dataset.postFile;
 
-            /*
-             * Empty search
-             */
+    if (!filename) {
+        return;
+    }
 
-            if (!searchTerm) {
+    const date =
+        await getGitHubPostDate(
+            filename
+        );
 
-                displayPosts(
-                    allPosts
-                );
+    if (date) {
 
-                return;
-
-            }
-
-
-            /*
-             * Search title,
-             * category and excerpt
-             */
-
-            const filteredPosts =
-                allPosts.filter(post => {
-
-                    const searchableText = (
-
-                        post.title +
-                        " " +
-                        post.category +
-                        " " +
-                        post.excerpt
-
-                    ).toLowerCase();
-
-
-                    return searchableText.includes(
-                        searchTerm
-                    );
-
-                });
-
-
-            displayPosts(
-                filteredPosts
-            );
-
-        }
-    );
-
+        dateElement.textContent =
+            date;
+    }
 }
 
 
-
 /* =========================================
-   START BLOG SYSTEM
+   START
 ========================================= */
 
 loadPosts();
+
+hydrateIndividualPostDate();
