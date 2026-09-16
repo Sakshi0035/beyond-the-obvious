@@ -1,10 +1,4 @@
 /* =========================================
-   BEYOND THE OBVIOUS
-   GLOBAL STYLES
-========================================= */
-
-
-/* =========================================
    RESET
 ========================================= */
 
@@ -22,11 +16,6 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background: #eeeeee;
     color: #111111;
-    overflow-x: hidden;
-}
-
-img {
-    max-width: 100%;
 }
 
 a {
@@ -53,8 +42,7 @@ input {
 
 
 /* =========================================
-   GLOBAL SIDEBAR
-   SAME ON EVERY PAGE
+   SIDEBAR
 ========================================= */
 
 .sidebar {
@@ -63,15 +51,11 @@ input {
     top: 0;
     width: 347px;
     height: 100vh;
-
     background: #eeeeee;
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
     padding-top: 150px;
-
     z-index: 1000;
 }
 
@@ -82,39 +66,28 @@ input {
 .profile-image {
     width: 148px;
     height: 148px;
-
     border-radius: 50%;
     object-fit: cover;
-
     display: block;
-
     margin: 0 auto 40px;
 }
 
 .profile h3 {
     font-size: 16px;
     font-weight: 700;
-
     margin-bottom: 35px;
 }
 
 .profile-button {
     display: inline-flex;
-
     justify-content: center;
     align-items: center;
-
     height: 34px;
-
     padding: 0 25px;
-
     border: 1px solid #ff4c4c;
     border-radius: 25px;
-
     color: #ff3333;
-
     font-size: 14px;
-
     transition: 0.25s ease;
 }
 
@@ -125,16 +98,11 @@ input {
 
 .sidebar-social {
     display: flex;
-
     gap: 22px;
-
     margin-top: 45px;
-
     font-size: 14px;
-
     flex-wrap: wrap;
     justify-content: center;
-
     max-width: 270px;
 }
 
@@ -144,22 +112,18 @@ input {
 
 
 /* =========================================
-   GLOBAL MAIN AREA
+   MAIN
 ========================================= */
 
 .main-content {
     margin-left: 347px;
     min-height: 100vh;
-
-    width: calc(100% - 347px);
-
-    overflow-x: hidden;
 }
 
 
 /* =========================================
-   GLOBAL HERO / HEADER
-   SAME ON EVERY PAGE
+   COMMON HERO
+   SAME ON HOME / ABOUT / CONTACT / POSTS
 ========================================= */
 
 .hero {
@@ -179,40 +143,29 @@ input {
     color: white;
 
     display: flex;
-
     justify-content: center;
     align-items: center;
 
     text-align: center;
-
-    width: 100%;
 }
 
 .hero-overlay {
     width: min(1100px, 92%);
-
     padding: 35px 0;
 }
 
 .hero h1 {
     font-size: clamp(42px, 5vw, 58px);
-
     line-height: 1.1;
-
     margin-bottom: 22px;
-
     font-weight: 700;
 }
 
 .hero p {
     max-width: 850px;
-
     margin: 0 auto;
-
     font-size: 17px;
-
     line-height: 1.55;
-
     color: #eeeeee;
 }
 
@@ -225,39 +178,30 @@ input {
     margin-top: 52px;
 
     display: flex;
-
     justify-content: center;
     align-items: center;
 
     gap: 30px;
-
     flex-wrap: wrap;
 }
 
 .main-nav {
     display: flex;
-
     justify-content: center;
     align-items: center;
-
     gap: 42px;
 }
 
 .main-nav a {
     font-size: 16px;
-
     font-weight: 700;
-
     position: relative;
-
     padding-bottom: 7px;
 }
 
 .main-nav a::after {
     content: "";
-
     position: absolute;
-
     left: 0;
     bottom: 0;
 
@@ -279,19 +223,16 @@ input {
 
 .hero-search input {
     width: 100%;
-
     height: 42px;
 
     padding: 0 18px;
 
     border: 1px solid rgba(255,255,255,0.65);
-
     border-radius: 24px;
 
     outline: none;
 
     background: rgba(255,255,255,0.96);
-
     color: #111111;
 
     font-size: 14px;
@@ -315,17 +256,12 @@ input {
 
 .blog-area {
     background: #eeeeee;
-
     padding: 55px 35px 80px;
-
-    width: 100%;
 }
 
 .blog-container {
     width: 100%;
-
     max-width: 1050px;
-
     margin: 0 auto;
 }
 
@@ -336,13 +272,9 @@ input {
 .posts-loading,
 .no-posts-message {
     width: 100%;
-
     text-align: center;
-
     padding: 55px 20px;
-
     color: #777777;
-
     font-size: 16px;
 }
 
@@ -357,7 +289,6 @@ input {
 
 .blog-card {
     width: 100%;
-
     background: #ffffff;
 
     margin-bottom: 24px;
@@ -366,26 +297,18 @@ input {
 
     box-shadow:
         0 2px 10px rgba(0,0,0,0.04);
-
-    overflow: hidden;
 }
 
 .blog-card-header {
     position: relative;
-
     padding-right: 55px;
 }
 
 .blog-card-title {
     font-size: 31px;
-
     line-height: 1.2;
-
     font-weight: 700;
-
     margin-bottom: 20px;
-
-    overflow-wrap: anywhere;
 }
 
 .blog-card-title a:hover {
@@ -394,32 +317,22 @@ input {
 
 .blog-card-meta {
     color: #111111;
-
     font-size: 15px;
-
     margin-bottom: 28px;
 }
 
 .blog-card-body {
     display: flex;
-
     align-items: flex-start;
-
     gap: 32px;
-
-    width: 100%;
-
-    min-width: 0;
 }
 
 .blog-card-image-link {
     flex: 0 0 145px;
-
     width: 145px;
     height: 145px;
 
     display: block;
-
     overflow: hidden;
 
     background: #e9e9e9;
@@ -432,7 +345,6 @@ input {
     height: 100%;
 
     object-fit: cover;
-
     object-position: center center;
 
     transition: transform 0.25s ease;
@@ -444,35 +356,24 @@ input {
 
 .blog-card-text {
     flex: 1;
-
     min-width: 0;
-
-    overflow-wrap: anywhere;
 }
 
 .blog-card-category {
     color: #777777;
-
     font-size: 12px;
-
     font-weight: 700;
-
     letter-spacing: 1.2px;
-
     margin-bottom: 12px;
 }
 
 .blog-card-excerpt {
     color: #333333;
-
     font-size: 16px;
-
     line-height: 1.65;
-
     margin: 0;
 
     display: -webkit-box;
-
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
 
@@ -481,13 +382,11 @@ input {
 
 .blog-card-footer {
     margin-top: 32px;
-
     padding-top: 18px;
 
     border-top: 1px solid #eeeeee;
 
     display: flex;
-
     justify-content: space-between;
     align-items: center;
 
@@ -496,9 +395,7 @@ input {
 
 .read-more {
     color: #e60000;
-
     font-size: 14px;
-
     font-weight: 700;
 }
 
@@ -516,13 +413,11 @@ input {
     height: 38px;
 
     border: 0;
-
     background: transparent;
 
     color: #444444;
 
     font-size: 25px;
-
     line-height: 1;
 
     cursor: pointer;
@@ -534,7 +429,6 @@ input {
 
 .post-comment-link {
     color: #e60000;
-
     font-size: 14px;
 }
 
@@ -545,21 +439,17 @@ input {
 
 .static-page-card {
     width: 100%;
-
     background: white;
 
     padding: 48px 55px;
 
     display: flex;
-
     align-items: flex-start;
 
     gap: 42px;
 
     box-shadow:
         0 2px 10px rgba(0,0,0,0.04);
-
-    overflow: hidden;
 }
 
 .static-page-profile {
@@ -571,7 +461,6 @@ input {
     height: 130px;
 
     border-radius: 50%;
-
     object-fit: cover;
 
     display: block;
@@ -579,27 +468,19 @@ input {
 
 .static-page-content {
     flex: 1;
-
     min-width: 0;
-
-    overflow-wrap: anywhere;
 }
 
 .static-page-content h2 {
     font-size: 32px;
-
     line-height: 1.25;
-
     margin-bottom: 22px;
 }
 
 .static-page-content p {
     font-size: 17px;
-
     line-height: 1.75;
-
     margin-bottom: 22px;
-
     color: #222222;
 }
 
@@ -607,7 +488,6 @@ input {
     margin: 0 0 25px;
 
     display: flex;
-
     flex-direction: column;
 
     gap: 8px;
@@ -619,12 +499,8 @@ input {
 
 .contact-link-block a {
     color: #e60000;
-
     font-size: 16px;
-
     font-weight: 700;
-
-    overflow-wrap: anywhere;
 }
 
 .contact-link-block a:hover {
@@ -636,62 +512,80 @@ input {
    INDIVIDUAL POST PAGE
 ========================================= */
 
+/*
+   IMPORTANT:
+
+   This section starts BELOW the common hero.
+
+   The post itself is a separate centered
+   container. The black title area lives
+   INSIDE that container.
+*/
+
 .post-page {
     background: #eeeeee;
 
     min-height: 100vh;
 
-    width: 100%;
-
-    overflow-x: hidden;
+    padding: 48px 35px 80px;
 }
 
 
 /* =========================================
-   POST HEADER
+   POST CONTAINER
+========================================= */
+
+.post-container {
+    width: 100%;
+    max-width: 1050px;
+
+    margin: 0 auto;
+}
+
+
+/* =========================================
+   COMPLETE BLOG POST CARD
+========================================= */
+
+.blog-post.single-post {
+    width: 100%;
+
+    margin: 0 auto;
+
+    background: #ffffff;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 18px rgba(0,0,0,0.05);
+}
+
+
+/* =========================================
+   POST BLACK TITLE HEADER
+
+   NOT full browser width.
+   It is contained INSIDE .blog-post.
 ========================================= */
 
 .post-header {
-    background: #111111;
-
-    color: white;
-
-    padding: 55px 35px;
-
     width: 100%;
 
-    overflow: hidden;
+    background: #111111;
+    color: white;
+
+    padding: 50px 45px 46px;
 }
 
 .post-header-inner {
     width: 100%;
-
-    max-width: 1050px;
+    max-width: 950px;
 
     margin: 0 auto;
-
-    overflow: hidden;
-}
-
-.back-to-home {
-    display: inline-block;
-
-    font-size: 14px;
-
-    font-weight: 700;
-
-    margin-bottom: 35px;
-
-    color: #eeeeee;
-}
-
-.back-to-home:hover {
-    color: #bbbbbb;
 }
 
 .post-category {
     font-size: 13px;
-
     font-weight: 700;
 
     letter-spacing: 1.5px;
@@ -699,90 +593,78 @@ input {
     color: #bbbbbb;
 
     margin-bottom: 18px;
-
-    overflow-wrap: anywhere;
 }
 
 .post-header h1 {
+    width: 100%;
+
     font-size: clamp(38px, 5vw, 58px);
 
     line-height: 1.15;
 
-    max-width: 950px;
+    margin: 0 0 22px;
 
-    margin-bottom: 22px;
+    color: #ffffff;
 
-    overflow-wrap: anywhere;
-
+    overflow-wrap: break-word;
     word-break: normal;
 }
 
 .post-meta {
     font-size: 14px;
+    line-height: 1.5;
 
     color: #bbbbbb;
-
-    overflow-wrap: anywhere;
 }
 
 
 /* =========================================
-   ARTICLE CONTAINER
+   FEATURED IMAGE WRAPPER
 ========================================= */
 
-.blog-post {
+.post-featured-image-wrap {
     width: 100%;
 
-    max-width: 1050px;
+    background: #ffffff;
 
-    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    background: white;
-
-    padding-bottom: 70px;
-
-    box-shadow:
-        0 4px 18px rgba(0,0,0,0.05);
-
-    overflow: hidden;
+    padding: 0;
 }
 
 
 /* =========================================
-   FEATURED IMAGE
-   EXACTLY 1:1
-   DOES NOT OVERLAP CONTENT
+   FEATURED IMAGE — 1:1 SQUARE
 ========================================= */
 
 .post-featured-image {
     display: block;
 
-    width: min(100%, 700px);
-
-    height: auto;
+    width: min(100%, 650px);
 
     aspect-ratio: 1 / 1;
 
-    object-fit: cover;
+    height: auto;
 
+    object-fit: cover;
     object-position: center center;
 
     margin: 0 auto;
 
-    max-width: 100%;
-
-    border: 0;
+    max-width: 650px;
 }
 
 
 /* =========================================
-   POST CONTENT
+   ARTICLE CONTENT
 ========================================= */
 
 .post-content {
     width: 100%;
 
-    padding: 55px 70px 0;
+    padding: 55px 70px 70px;
 
     font-size: 18px;
 
@@ -790,11 +672,8 @@ input {
 
     color: #222222;
 
-    overflow-wrap: anywhere;
-
+    overflow-wrap: break-word;
     word-wrap: break-word;
-
-    min-width: 0;
 }
 
 .post-content h2 {
@@ -803,12 +682,9 @@ input {
     line-height: 1.3;
 
     margin-top: 50px;
-
     margin-bottom: 20px;
 
     color: #111111;
-
-    overflow-wrap: anywhere;
 }
 
 .post-content h3 {
@@ -817,18 +693,13 @@ input {
     line-height: 1.35;
 
     margin-top: 40px;
-
     margin-bottom: 18px;
 
     color: #111111;
-
-    overflow-wrap: anywhere;
 }
 
 .post-content p {
-    margin-bottom: 24px;
-
-    max-width: 100%;
+    margin: 0 0 24px;
 }
 
 .post-content strong {
@@ -843,13 +714,11 @@ input {
 .post-content ol {
     margin: 0 0 28px 28px;
 
-    max-width: 100%;
+    padding-left: 20px;
 }
 
 .post-content li {
     margin-bottom: 10px;
-
-    overflow-wrap: anywhere;
 }
 
 .post-content blockquote {
@@ -863,37 +732,7 @@ input {
 
     font-style: italic;
 
-    max-width: 100%;
-
-    overflow-wrap: anywhere;
-}
-
-
-/* =========================================
-   PROTECT CONTENT FROM OVERFLOW
-========================================= */
-
-.post-content img,
-.post-content video,
-.post-content iframe,
-.post-content table {
-    max-width: 100%;
-}
-
-.post-content img {
-    height: auto;
-    display: block;
-}
-
-.post-content table {
-    width: 100%;
-    overflow-wrap: anywhere;
-}
-
-.post-content pre,
-.post-content code {
-    max-width: 100%;
-    overflow-x: auto;
+    overflow-wrap: break-word;
 }
 
 
@@ -902,7 +741,7 @@ input {
 ========================================= */
 
 .source-note {
-    margin: 55px 70px 0;
+    margin: 55px 0 0;
 
     padding: 25px;
 
@@ -916,11 +755,11 @@ input {
 
     color: #555555;
 
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
 }
 
 .source-note h3 {
-    margin-bottom: 12px;
+    margin-top: 0;
 }
 
 
@@ -932,8 +771,6 @@ input {
     background: #eeeeee;
 
     padding: 65px 35px 80px;
-
-    width: 100%;
 }
 
 .related-posts-inner {
@@ -1006,8 +843,6 @@ input {
 
     .main-content {
         margin-left: 0;
-
-        width: 100%;
     }
 
     .mobile-header {
@@ -1034,7 +869,6 @@ input {
 
     .mobile-logo {
         font-size: 20px;
-
         font-weight: 700;
     }
 
@@ -1051,7 +885,7 @@ input {
     }
 
 
-    /* HERO */
+    /* COMMON HERO */
 
     .hero {
         min-height: 470px;
@@ -1120,43 +954,52 @@ input {
     }
 
 
-    /* POST */
+    /* =====================================
+       INDIVIDUAL POST MOBILE
+    ====================================== */
+
+    .post-page {
+        padding: 30px 15px 50px;
+    }
+
+    .post-container {
+        width: 100%;
+    }
 
     .post-header {
-        padding: 40px 20px;
+        padding: 38px 25px 35px;
+    }
+
+    .post-header-inner {
+        width: 100%;
     }
 
     .post-header h1 {
         font-size: 38px;
+
+        line-height: 1.15;
+
+        overflow-wrap: break-word;
     }
-
-    .blog-post {
-        margin: 0;
-
-        width: 100%;
-    }
-
-
-    /* 1:1 IMAGE ON MOBILE TOO */
 
     .post-featured-image {
-        width: min(100%, 600px);
+        width: 100%;
+
+        max-width: 100%;
 
         aspect-ratio: 1 / 1;
 
-        height: auto;
-
         object-fit: cover;
-
-        margin: 0 auto;
     }
 
     .post-content {
-        padding: 40px 25px 0;
+        padding: 40px 25px 50px;
 
         font-size: 17px;
 
         line-height: 1.75;
+
+        overflow-wrap: break-word;
     }
 
     .post-content h2 {
@@ -1170,11 +1013,11 @@ input {
     }
 
     .source-note {
-        margin: 40px 25px 0;
+        margin-top: 40px;
     }
 
 
-    /* STATIC */
+    /* STATIC PAGES */
 
     .static-page-card {
         flex-direction: column;
@@ -1185,6 +1028,7 @@ input {
     .static-page-profile {
         flex-basis: auto;
     }
+
 }
 
 
@@ -1221,7 +1065,6 @@ input {
 
     .blog-area {
         padding-left: 10px;
-
         padding-right: 10px;
     }
 
@@ -1254,46 +1097,60 @@ input {
     }
 
 
-    /* POST */
+    /* =====================================
+       POST
+    ====================================== */
+
+    .post-page {
+        padding: 20px 10px 40px;
+    }
 
     .post-header {
-        padding: 35px 18px;
+        padding: 32px 18px 30px;
     }
 
     .post-header h1 {
         font-size: 32px;
+
+        line-height: 1.15;
     }
 
+    .post-category {
+        font-size: 12px;
 
-    /* KEEP IMAGE SQUARE */
-
-    .post-featured-image {
-        width: 100%;
-
-        aspect-ratio: 1 / 1;
-
-        height: auto;
-
-        object-fit: cover;
+        letter-spacing: 1.2px;
     }
 
     .post-content {
-        padding: 30px 18px 0;
+        padding: 30px 18px 45px;
 
         font-size: 16px;
+
+        line-height: 1.75;
     }
 
     .post-content h2 {
         font-size: 25px;
+
+        line-height: 1.3;
+
+        margin-top: 38px;
     }
 
     .post-content h3 {
         font-size: 21px;
     }
 
+    .post-content blockquote {
+        padding: 18px 18px;
+
+        margin: 30px 0;
+    }
+
     .source-note {
-        margin: 35px 18px 0;
+        margin-top: 35px;
 
         padding: 20px;
     }
+
 }
