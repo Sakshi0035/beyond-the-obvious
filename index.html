@@ -214,35 +214,63 @@
 
 
     <!-- =========================================
-         BLOG POSTS
-         
-         IMPORTANT:
-         This container is intentionally EMPTY.
-
-         JavaScript will automatically discover
-         published HTML files inside /posts/
-         and generate the blog cards here.
-
-         DO NOT manually add blog cards here.
+         SEARCH
     ========================================== -->
 
     <section class="blog-area">
 
 
-        <div
-            class="blog-container"
-            id="posts-container"
-        >
+        <div class="blog-container">
 
-            <!--
-                BLOG POSTS ARE AUTOMATICALLY LOADED HERE.
-                DO NOT ADD INDIVIDUAL BLOG CARDS MANUALLY.
-            -->
+
+            <div class="blog-search">
+
+
+                <input
+                    type="search"
+                    id="blogSearch"
+                    placeholder="Search articles..."
+                    autocomplete="off"
+                >
+
+
+            </div>
+
+
+
+            <!-- =================================
+                 AUTOMATIC BLOG POSTS
+            ================================== -->
+
+            <div
+                id="posts-container"
+                class="posts-grid"
+            >
+
+                <div
+                    id="posts-loading"
+                    class="posts-loading"
+                >
+                    Loading articles...
+                </div>
+
+            </div>
+
+
+            <p
+                id="no-posts-message"
+                class="no-posts-message"
+                style="display:none;"
+            >
+                No published posts found.
+            </p>
+
 
         </div>
 
 
     </section>
+
 
 
 
@@ -266,7 +294,617 @@
 
 
 <!-- =========================================
-     JAVASCRIPT
+     AUTOMATIC POST LOADER
+========================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    const postsContainer =
+        document.getElementById("posts-container");
+
+
+    const loadingMessage =
+        document.getElementById("posts-loading");
+
+
+    const noPostsMessage =
+        document.getElementById("no-posts-message");
+
+
+    const searchInput =
+        document.getElementById("blogSearch");
+
+
+
+    /*
+     * YOUR GITHUB REPOSITORY
+     */
+
+    const GITHUB_API =
+        "https://api.github.com/repos/Sakshi0035/beyond-the-obvious/contents/posts?ref=main";
+
+
+
+    let allPosts = [];
+
+
+
+    /*
+     * Escape text before putting it into HTML
+     */
+
+    function escapeHTML(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            value || "";
+
+        return div.innerHTML;
+
+    }
+
+
+
+    /*
+     * Get featured image URL
+     */
+
+    function getImageURL(imageSource, postFile) {
+
+        if (!imageSource) {
+
+            return "";
+
+        }
+
+
+        try {
+
+            return new URL(
+                imageSource,
+                new URL(
+                    postFile,
+                    window.location.href
+                )
+            ).href;
+
+        } catch (error) {
+
+            return imageSource;
+
+        }
+
+    }
+
+
+
+    /*
+     * Read one blog HTML file
+     */
+
+    async function readPost(file) {
+
+        try {
+
+            const response =
+                await fetch(
+                    "posts/" + file.name
+                );
+
+
+            if (!response.ok) {
+
+                return null;
+
+            }
+
+
+            const html =
+                await response.text();
+
+
+            const parser =
+                new DOMParser();
+
+
+            const doc =
+                parser.parseFromString(
+                    html,
+                    "text/html"
+                );
+
+
+
+            const titleElement =
+                doc.querySelector(
+                    ".post-header h1"
+                );
+
+
+            const categoryElement =
+                doc.querySelector(
+                    ".post-category"
+                );
+
+
+            const dateElement =
+                doc.querySelector(
+                    ".post-meta"
+                );
+
+
+            const imageElement =
+                doc.querySelector(
+                    ".post-featured-image"
+                );
+
+
+            const descriptionElement =
+                doc.querySelector(
+                    'meta[name="description"]'
+                );
+
+
+            const contentElement =
+                doc.querySelector(
+                    ".post-content"
+                );
+
+
+
+            let title =
+                titleElement
+                    ? titleElement.textContent.trim()
+                    : doc.title;
+
+
+
+            let category =
+                categoryElement
+                    ? categoryElement.textContent.trim()
+                    : "BEYOND THE OBVIOUS";
+
+
+
+            let date =
+                dateElement
+                    ? dateElement.textContent.trim()
+                    : "";
+
+
+
+            let image = "";
+
+
+            if (imageElement) {
+
+                image =
+                    getImageURL(
+                        imageElement.getAttribute("src"),
+                        "posts/" + file.name
+                    );
+
+            }
+
+
+
+            /*
+             * Use meta description first.
+             * If there isn't one, use the first paragraph.
+             */
+
+            let excerpt = "";
+
+
+            if (descriptionElement) {
+
+                excerpt =
+                    descriptionElement
+                        .getAttribute("content") || "";
+
+            }
+
+
+            if (!excerpt && contentElement) {
+
+                const firstParagraph =
+                    contentElement.querySelector("p");
+
+
+                if (firstParagraph) {
+
+                    excerpt =
+                        firstParagraph.textContent.trim();
+
+                }
+
+            }
+
+
+
+            return {
+
+                file: file.name,
+
+                url:
+                    "posts/" + file.name,
+
+                title,
+
+                category,
+
+                date,
+
+                image,
+
+                excerpt
+
+            };
+
+
+        } catch (error) {
+
+            console.error(
+                "Could not read post:",
+                file.name,
+                error
+            );
+
+
+            return null;
+
+        }
+
+    }
+
+
+
+    /*
+     * Create one homepage blog card
+     */
+
+    function createPostCard(post) {
+
+
+        const article =
+            document.createElement("article");
+
+
+        article.className =
+            "blog-card";
+
+
+
+        article.dataset.search =
+            (
+                post.title +
+                " " +
+                post.category +
+                " " +
+                post.excerpt
+            ).toLowerCase();
+
+
+
+        article.innerHTML = `
+
+
+            ${
+                post.image
+                    ? `
+                        <a
+                            href="${post.url}"
+                            class="blog-card-image-link"
+                        >
+
+                            <img
+                                src="${post.image}"
+                                alt="${escapeHTML(post.title)}"
+                                class="blog-card-image"
+                            >
+
+                        </a>
+                    `
+                    : ""
+            }
+
+
+
+            <div class="blog-card-content">
+
+
+                <p class="blog-category">
+
+                    ${escapeHTML(post.category)}
+
+                </p>
+
+
+                <h2>
+
+                    <a href="${post.url}">
+
+                        ${escapeHTML(post.title)}
+
+                    </a>
+
+                </h2>
+
+
+                ${
+                    post.excerpt
+                        ? `
+                            <p class="blog-excerpt">
+
+                                ${escapeHTML(post.excerpt)}
+
+                            </p>
+                        `
+                        : ""
+                }
+
+
+
+                <div class="blog-card-footer">
+
+
+                    ${
+                        post.date
+                            ? `
+                                <span class="blog-date">
+
+                                    ${escapeHTML(post.date)}
+
+                                </span>
+                            `
+                            : ""
+                    }
+
+
+                    <a
+                        href="${post.url}"
+                        class="read-more"
+                    >
+                        READ ARTICLE →
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+        `;
+
+
+        return article;
+
+    }
+
+
+
+    /*
+     * Display posts
+     */
+
+    function displayPosts(posts) {
+
+
+        postsContainer.innerHTML = "";
+
+
+        if (!posts.length) {
+
+            noPostsMessage.style.display =
+                "block";
+
+            return;
+
+        }
+
+
+        noPostsMessage.style.display =
+            "none";
+
+
+        posts.forEach(post => {
+
+            postsContainer.appendChild(
+                createPostCard(post)
+            );
+
+        });
+
+    }
+
+
+
+    /*
+     * Load every HTML file from /posts/
+     */
+
+    async function loadPosts() {
+
+
+        try {
+
+
+            const response =
+                await fetch(GITHUB_API);
+
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "GitHub API returned " +
+                    response.status
+                );
+
+            }
+
+
+
+            const files =
+                await response.json();
+
+
+
+            const postFiles =
+                files.filter(file => {
+
+                    return (
+                        file.type === "file" &&
+                        file.name.toLowerCase().endsWith(".html")
+                    );
+
+                });
+
+
+
+            const loadedPosts =
+                await Promise.all(
+                    postFiles.map(
+                        readPost
+                    )
+                );
+
+
+
+            allPosts =
+                loadedPosts.filter(
+                    post => post !== null
+                );
+
+
+
+            /*
+             * Newest files first.
+             */
+
+            allPosts.reverse();
+
+
+
+            displayPosts(allPosts);
+
+
+        } catch (error) {
+
+
+            console.error(
+                "BLOG LOADING ERROR:",
+                error
+            );
+
+
+            postsContainer.innerHTML = `
+
+                <div class="posts-error">
+
+                    <h3>
+                        Articles could not be loaded.
+                    </h3>
+
+                    <p>
+                        Please refresh the page and try again.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+
+    /*
+     * SEARCH
+     */
+
+    if (searchInput) {
+
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+
+                const searchTerm =
+                    this.value
+                        .trim()
+                        .toLowerCase();
+
+
+
+                if (!searchTerm) {
+
+                    displayPosts(
+                        allPosts
+                    );
+
+                    return;
+
+                }
+
+
+
+                const filteredPosts =
+                    allPosts.filter(post => {
+
+
+                        const searchableText =
+                            (
+                                post.title +
+                                " " +
+                                post.category +
+                                " " +
+                                post.excerpt
+                            ).toLowerCase();
+
+
+                        return searchableText.includes(
+                            searchTerm
+                        );
+
+                    });
+
+
+
+                displayPosts(
+                    filteredPosts
+                );
+
+
+            }
+        );
+
+    }
+
+
+
+    /*
+     * START
+     */
+
+    loadPosts();
+
+
+});
+
+</script>
+
+
+
+<!-- =========================================
+     SIDEBAR JS
 ========================================= -->
 
 <script src="js/main.js"></script>
