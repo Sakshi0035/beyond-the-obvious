@@ -214,7 +214,7 @@
 
 
     <!-- =========================================
-         SEARCH
+         BLOG POSTS + SEARCH
     ========================================== -->
 
     <section class="blog-area">
@@ -223,33 +223,68 @@
         <div class="blog-container">
 
 
-            <div class="blog-search">
 
+            <!-- =================================
+                 SEARCH BAR
+            ================================== -->
+
+            <div
+                class="blog-search"
+                style="
+                    width: 100%;
+                    max-width: 760px;
+                    margin: 0 auto 35px;
+                    position: relative;
+                "
+            >
 
                 <input
                     type="search"
                     id="blogSearch"
                     placeholder="Search articles..."
                     autocomplete="off"
+                    aria-label="Search articles"
+                    style="
+                        width: 100%;
+                        height: 52px;
+                        box-sizing: border-box;
+                        padding: 0 22px;
+                        border: 1px solid #d8d8d8;
+                        border-radius: 50px;
+                        background: #ffffff;
+                        color: #111111;
+                        font-size: 16px;
+                        font-family: inherit;
+                        outline: none;
+                        box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+                    "
                 >
-
 
             </div>
 
 
 
             <!-- =================================
-                 AUTOMATIC BLOG POSTS
+                 AUTOMATIC POSTS
             ================================== -->
 
             <div
                 id="posts-container"
                 class="posts-grid"
+                style="
+                    width: 100%;
+                "
             >
 
                 <div
                     id="posts-loading"
-                    class="posts-loading"
+                    style="
+                        width: 100%;
+                        text-align: center;
+                        padding: 50px 20px;
+                        font-size: 16px;
+                        color: #777;
+                    "
                 >
                     Loading articles...
                 </div>
@@ -257,13 +292,26 @@
             </div>
 
 
-            <p
+
+            <!-- =================================
+                 NO SEARCH RESULTS
+            ================================== -->
+
+            <div
                 id="no-posts-message"
-                class="no-posts-message"
-                style="display:none;"
+                style="
+                    display: none;
+                    width: 100%;
+                    text-align: center;
+                    padding: 50px 20px;
+                    color: #777;
+                    font-size: 16px;
+                "
             >
-                No published posts found.
-            </p>
+
+                No articles found.
+
+            </div>
 
 
         </div>
@@ -294,7 +342,7 @@
 
 
 <!-- =========================================
-     AUTOMATIC POST LOADER
+     AUTOMATIC BLOG POST SYSTEM
 ========================================= -->
 
 <script>
@@ -323,7 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
      * YOUR GITHUB REPOSITORY
      */
 
-    const GITHUB_API =
+    const POSTS_API =
         "https://api.github.com/repos/Sakshi0035/beyond-the-obvious/contents/posts?ref=main";
 
 
@@ -332,9 +380,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    /*
-     * Escape text before putting it into HTML
-     */
+    /* =========================================
+       ESCAPE HTML
+    ========================================= */
 
     function escapeHTML(value) {
 
@@ -350,11 +398,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    /*
-     * Get featured image URL
-     */
+    /* =========================================
+       IMAGE URL FIX
+       
+       Your posts can use:
+       
+       src="filename.jpg"
+       
+       because your image files are stored
+       in the ROOT of the repository.
+
+       This automatically converts that to:
+       
+       ../filename.jpg
+       
+       when the post is inside /posts/.
+    ========================================= */
 
     function getImageURL(imageSource, postFile) {
+
 
         if (!imageSource) {
 
@@ -362,6 +424,59 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+
+        imageSource =
+            imageSource.trim();
+
+
+
+        /* Absolute URL */
+
+        if (
+            imageSource.startsWith("http://") ||
+            imageSource.startsWith("https://") ||
+            imageSource.startsWith("data:")
+        ) {
+
+            return imageSource;
+
+        }
+
+
+
+        /*
+         * Root-level image filename.
+         *
+         * Example:
+         *
+         * filename.jpg
+         *
+         * becomes:
+         *
+         * ../filename.jpg
+         */
+
+        if (
+            !imageSource.startsWith("../") &&
+            !imageSource.startsWith("./") &&
+            !imageSource.startsWith("/")
+        ) {
+
+            return new URL(
+                "../" + imageSource,
+                new URL(
+                    postFile,
+                    window.location.href
+                )
+            ).href;
+
+        }
+
+
+
+        /*
+         * Normal relative paths.
+         */
 
         try {
 
@@ -375,6 +490,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         } catch (error) {
 
+            console.error(
+                "Image URL error:",
+                imageSource,
+                error
+            );
+
             return imageSource;
 
         }
@@ -383,18 +504,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    /*
-     * Read one blog HTML file
-     */
+    /* =========================================
+       READ ONE POST
+    ========================================= */
 
     async function readPost(file) {
 
+
         try {
 
+
+            const postPath =
+                "posts/" + file.name;
+
+
             const response =
-                await fetch(
-                    "posts/" + file.name
-                );
+                await fetch(postPath);
+
 
 
             if (!response.ok) {
@@ -404,15 +530,18 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
+
             const html =
                 await response.text();
+
 
 
             const parser =
                 new DOMParser();
 
 
-            const doc =
+
+            const postDocument =
                 parser.parseFromString(
                     html,
                     "text/html"
@@ -420,39 +549,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+            /* =================================
+               TITLE
+            ================================= */
+
             const titleElement =
-                doc.querySelector(
+                postDocument.querySelector(
                     ".post-header h1"
-                );
-
-
-            const categoryElement =
-                doc.querySelector(
-                    ".post-category"
-                );
-
-
-            const dateElement =
-                doc.querySelector(
-                    ".post-meta"
-                );
-
-
-            const imageElement =
-                doc.querySelector(
-                    ".post-featured-image"
-                );
-
-
-            const descriptionElement =
-                doc.querySelector(
-                    'meta[name="description"]'
-                );
-
-
-            const contentElement =
-                doc.querySelector(
-                    ".post-content"
                 );
 
 
@@ -460,22 +563,64 @@ document.addEventListener("DOMContentLoaded", function () {
             let title =
                 titleElement
                     ? titleElement.textContent.trim()
-                    : doc.title;
+                    : "";
 
 
 
-            let category =
+            if (!title) {
+
+                title =
+                    postDocument.title ||
+                    file.name
+                        .replace(".html", "")
+                        .replace(/-/g, " ");
+
+            }
+
+
+
+            /* =================================
+               CATEGORY
+            ================================= */
+
+            const categoryElement =
+                postDocument.querySelector(
+                    ".post-category"
+                );
+
+
+            const category =
                 categoryElement
                     ? categoryElement.textContent.trim()
                     : "BEYOND THE OBVIOUS";
 
 
 
-            let date =
+            /* =================================
+               DATE
+            ================================= */
+
+            const dateElement =
+                postDocument.querySelector(
+                    ".post-meta"
+                );
+
+
+            const date =
                 dateElement
                     ? dateElement.textContent.trim()
                     : "";
 
+
+
+            /* =================================
+               FEATURED IMAGE
+            ================================= */
+
+            const imageElement =
+                postDocument.querySelector(
+                    ".post-featured-image"
+                );
 
 
             let image = "";
@@ -483,43 +628,77 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (imageElement) {
 
+
+                const imageSource =
+                    imageElement.getAttribute("src");
+
+
                 image =
                     getImageURL(
-                        imageElement.getAttribute("src"),
-                        "posts/" + file.name
+                        imageSource,
+                        postPath
                     );
 
             }
 
 
 
-            /*
-             * Use meta description first.
-             * If there isn't one, use the first paragraph.
-             */
+            /* =================================
+               EXCERPT
+            ================================= */
+
+            const descriptionElement =
+                postDocument.querySelector(
+                    'meta[name="description"]'
+                );
+
 
             let excerpt = "";
+
 
 
             if (descriptionElement) {
 
                 excerpt =
                     descriptionElement
-                        .getAttribute("content") || "";
+                        .getAttribute("content") ||
+                    "";
 
             }
 
 
-            if (!excerpt && contentElement) {
 
-                const firstParagraph =
-                    contentElement.querySelector("p");
+            /*
+             * If there is no meta description,
+             * take the first article paragraph.
+             */
+
+            if (!excerpt) {
 
 
-                if (firstParagraph) {
+                const contentElement =
+                    postDocument.querySelector(
+                        ".post-content"
+                    );
 
-                    excerpt =
-                        firstParagraph.textContent.trim();
+
+                if (contentElement) {
+
+
+                    const firstParagraph =
+                        contentElement.querySelector(
+                            "p"
+                        );
+
+
+                    if (firstParagraph) {
+
+                        excerpt =
+                            firstParagraph
+                                .textContent
+                                .trim();
+
+                    }
 
                 }
 
@@ -531,26 +710,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 file: file.name,
 
-                url:
-                    "posts/" + file.name,
+                url: postPath,
 
-                title,
+                title: title,
 
-                category,
+                category: category,
 
-                date,
+                date: date,
 
-                image,
+                image: image,
 
-                excerpt
+                excerpt: excerpt
 
             };
 
 
         } catch (error) {
 
+
             console.error(
-                "Could not read post:",
+                "Could not load post:",
                 file.name,
                 error
             );
@@ -564,9 +743,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    /*
-     * Create one homepage blog card
-     */
+    /* =========================================
+       CREATE BLOG CARD
+    ========================================= */
 
     function createPostCard(post) {
 
@@ -600,12 +779,24 @@ document.addEventListener("DOMContentLoaded", function () {
                         <a
                             href="${post.url}"
                             class="blog-card-image-link"
+                            style="
+                                display: block;
+                                width: 100%;
+                                overflow: hidden;
+                            "
                         >
 
                             <img
                                 src="${post.image}"
                                 alt="${escapeHTML(post.title)}"
                                 class="blog-card-image"
+                                style="
+                                    display: block;
+                                    width: 100%;
+                                    height: 360px;
+                                    object-fit: cover;
+                                    object-position: center;
+                                "
                             >
 
                         </a>
@@ -625,6 +816,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </p>
 
 
+
                 <h2>
 
                     <a href="${post.url}">
@@ -634,6 +826,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </a>
 
                 </h2>
+
 
 
                 ${
@@ -666,11 +859,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
 
+
                     <a
                         href="${post.url}"
                         class="read-more"
                     >
+
                         READ ARTICLE →
+
                     </a>
 
 
@@ -682,15 +878,16 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
 
 
+
         return article;
 
     }
 
 
 
-    /*
-     * Display posts
-     */
+    /* =========================================
+       DISPLAY POSTS
+    ========================================= */
 
     function displayPosts(posts) {
 
@@ -698,25 +895,32 @@ document.addEventListener("DOMContentLoaded", function () {
         postsContainer.innerHTML = "";
 
 
+
         if (!posts.length) {
+
 
             noPostsMessage.style.display =
                 "block";
+
 
             return;
 
         }
 
 
+
         noPostsMessage.style.display =
             "none";
 
 
-        posts.forEach(post => {
+
+        posts.forEach(function (post) {
+
 
             postsContainer.appendChild(
                 createPostCard(post)
             );
+
 
         });
 
@@ -724,9 +928,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    /*
-     * Load every HTML file from /posts/
-     */
+    /* =========================================
+       LOAD ALL POSTS FROM /posts/
+    ========================================= */
 
     async function loadPosts() {
 
@@ -735,14 +939,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             const response =
-                await fetch(GITHUB_API);
+                await fetch(
+                    POSTS_API
+                );
 
 
 
             if (!response.ok) {
 
                 throw new Error(
-                    "GitHub API returned " +
+                    "GitHub API error: " +
                     response.status
                 );
 
@@ -755,17 +961,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+            /*
+             * Only HTML files inside /posts/
+             */
+
             const postFiles =
-                files.filter(file => {
+                files.filter(function (file) {
 
                     return (
                         file.type === "file" &&
-                        file.name.toLowerCase().endsWith(".html")
+                        file.name
+                            .toLowerCase()
+                            .endsWith(".html")
                     );
 
                 });
 
 
+
+            /*
+             * Read every post.
+             */
 
             const loadedPosts =
                 await Promise.all(
@@ -778,46 +994,79 @@ document.addEventListener("DOMContentLoaded", function () {
 
             allPosts =
                 loadedPosts.filter(
-                    post => post !== null
+                    function (post) {
+
+                        return post !== null;
+
+                    }
                 );
 
 
 
             /*
-             * Newest files first.
+             * Newest/current directory items first.
              */
 
             allPosts.reverse();
 
 
 
-            displayPosts(allPosts);
+            /*
+             * Remove loading message.
+             */
+
+            if (loadingMessage) {
+
+                loadingMessage.remove();
+
+            }
+
+
+
+            /*
+             * Display every published post.
+             */
+
+            displayPosts(
+                allPosts
+            );
 
 
         } catch (error) {
 
 
             console.error(
-                "BLOG LOADING ERROR:",
+                "BLOG POST LOADING ERROR:",
                 error
             );
 
 
-            postsContainer.innerHTML = `
 
-                <div class="posts-error">
+            if (loadingMessage) {
 
-                    <h3>
-                        Articles could not be loaded.
-                    </h3>
+                loadingMessage.innerHTML = `
 
-                    <p>
-                        Please refresh the page and try again.
-                    </p>
+                    <div
+                        style="
+                            text-align: center;
+                            padding: 40px 20px;
+                            color: #777;
+                        "
+                    >
 
-                </div>
+                        <h3>
+                            Articles could not be loaded.
+                        </h3>
 
-            `;
+                        <p>
+                            Please refresh the page and try again.
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
 
         }
 
@@ -825,9 +1074,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    /*
-     * SEARCH
-     */
+    /* =========================================
+       SEARCH POSTS
+    ========================================= */
 
     if (searchInput) {
 
@@ -844,11 +1093,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+                /*
+                 * Empty search =
+                 * show every post again.
+                 */
+
                 if (!searchTerm) {
+
 
                     displayPosts(
                         allPosts
                     );
+
 
                     return;
 
@@ -856,25 +1112,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+                /*
+                 * Search title,
+                 * category and excerpt.
+                 */
+
                 const filteredPosts =
-                    allPosts.filter(post => {
+                    allPosts.filter(
+                        function (post) {
 
 
-                        const searchableText =
-                            (
-                                post.title +
-                                " " +
-                                post.category +
-                                " " +
-                                post.excerpt
-                            ).toLowerCase();
+                            const searchableText =
+                                (
+                                    post.title +
+                                    " " +
+                                    post.category +
+                                    " " +
+                                    post.excerpt
+                                ).toLowerCase();
 
 
-                        return searchableText.includes(
-                            searchTerm
-                        );
 
-                    });
+                            return searchableText.includes(
+                                searchTerm
+                            );
+
+
+                        }
+                    );
 
 
 
@@ -890,9 +1155,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    /*
-     * START
-     */
+    /* =========================================
+       START AUTOMATIC POST SYSTEM
+    ========================================= */
 
     loadPosts();
 
@@ -904,7 +1169,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <!-- =========================================
-     SIDEBAR JS
+     EXISTING SIDEBAR JAVASCRIPT
 ========================================= -->
 
 <script src="js/main.js"></script>
