@@ -18,659 +18,6 @@
 
 <link rel="stylesheet" href="../css/style.css">
 
-
-<!-- =====================================================
-     SINGLE BLOG POST PAGE FIX
-====================================================== -->
-
-<style>
-
-/* =====================================================
-   PAGE RESET
-====================================================== */
-
-html,
-body {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-}
-
-
-/* =====================================================
-   MAIN CONTENT
-====================================================== */
-
-.main-content {
-    width: auto !important;
-    max-width: none !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-}
-
-
-/* =====================================================
-   BLOG AREA
-====================================================== */
-
-.blog-area {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-}
-
-
-/* =====================================================
-   BLOG CONTAINER
-
-   IMPORTANT:
-   Never allow the article to become wider than
-   the available viewport.
-====================================================== */
-
-.blog-container {
-    width: 100% !important;
-    max-width: 920px !important;
-    min-width: 0 !important;
-
-    margin-left: auto !important;
-    margin-right: auto !important;
-
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-
-    box-sizing: border-box !important;
-
-    overflow: visible !important;
-}
-
-
-/* =====================================================
-   SINGLE POST
-====================================================== */
-
-.blog-post.single-post {
-    position: relative !important;
-
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-
-    margin: 0 !important;
-
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-
-    overflow: visible !important;
-
-    float: none !important;
-}
-
-
-/* =====================================================
-   POST HEADER
-====================================================== */
-
-.single-post .post-header {
-    position: relative !important;
-
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-
-    margin: 0 !important;
-    padding: 32px 0 26px !important;
-
-    box-sizing: border-box !important;
-
-    overflow: visible !important;
-
-    float: none !important;
-}
-
-
-/* CATEGORY */
-
-.single-post .post-category {
-    display: block !important;
-
-    width: auto !important;
-    max-width: 100% !important;
-
-    margin: 0 0 12px !important;
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-}
-
-
-/* TITLE */
-
-.single-post .post-header h1 {
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    height: auto !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-
-    overflow-wrap: anywhere !important;
-    word-wrap: break-word !important;
-}
-
-
-/* META */
-
-.single-post .post-meta {
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 14px 0 0 !important;
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-}
-
-
-/* =====================================================
-   FEATURED IMAGE
-====================================================== */
-
-.single-post .post-featured-image {
-
-    position: relative !important;
-
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-
-    margin: 0 0 34px !important;
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-
-    overflow: hidden !important;
-
-    float: none !important;
-
-    clear: both !important;
-
-    line-height: 0 !important;
-}
-
-
-/* IMAGE */
-
-.single-post .post-featured-image img {
-
-    position: relative !important;
-
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    height: auto !important;
-
-    min-height: 0 !important;
-    max-height: none !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-
-    object-fit: contain !important;
-    object-position: center !important;
-
-    float: none !important;
-
-    clear: both !important;
-}
-
-
-/* =====================================================
-   ARTICLE CONTENT
-====================================================== */
-
-.single-post .post-content {
-
-    position: relative !important;
-
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-
-    overflow: visible !important;
-
-    float: none !important;
-
-    clear: both !important;
-
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-}
-
-
-/* =====================================================
-   ARTICLE ELEMENTS
-====================================================== */
-
-.single-post .post-content p {
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin-top: 0 !important;
-    margin-bottom: 22px !important;
-
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
-}
-
-
-.single-post .post-content h2 {
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin-top: 48px !important;
-    margin-bottom: 20px !important;
-
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
-}
-
-
-.single-post .post-content h3 {
-
-    max-width: 100% !important;
-
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
-}
-
-
-.single-post .post-content ul,
-.single-post .post-content ol {
-
-    width: auto !important;
-    max-width: 100% !important;
-
-    margin-top: 0 !important;
-    margin-bottom: 24px !important;
-
-    padding-left: 28px !important;
-
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
-}
-
-
-.single-post .post-content li {
-
-    max-width: 100% !important;
-
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
-}
-
-
-/* =====================================================
-   BLOCKQUOTES
-====================================================== */
-
-.single-post .post-content blockquote {
-
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 30px 0 !important;
-
-    padding: 20px 24px !important;
-
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
-}
-
-
-/* =====================================================
-   SOURCE NOTE
-====================================================== */
-
-.single-post .source-note {
-
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    height: auto !important;
-
-    margin: 46px 0 0 !important;
-    padding: 24px !important;
-
-    box-sizing: border-box !important;
-
-    overflow: visible !important;
-}
-
-
-/* =====================================================
-   RELATED POSTS
-====================================================== */
-
-.related-posts {
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    box-sizing: border-box !important;
-
-    overflow: hidden !important;
-
-    clear: both !important;
-}
-
-
-.related-posts-inner {
-
-    width: 100% !important;
-    max-width: 920px !important;
-    min-width: 0 !important;
-
-    margin-left: auto !important;
-    margin-right: auto !important;
-
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-
-    box-sizing: border-box !important;
-}
-
-
-.related-posts-grid {
-
-    display: grid !important;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(230px, 1fr)
-        ) !important;
-
-    gap: 24px !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    box-sizing: border-box !important;
-}
-
-
-.related-post-card {
-
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    height: auto !important;
-
-    box-sizing: border-box !important;
-
-    overflow: hidden !important;
-}
-
-
-.related-post-card-link {
-
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    box-sizing: border-box !important;
-
-    text-decoration: none;
-}
-
-
-.related-post-card img {
-
-    display: block !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-
-    object-fit: cover !important;
-}
-
-
-.related-post-card-content {
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    padding: 18px !important;
-
-    box-sizing: border-box !important;
-
-    overflow-wrap: break-word !important;
-}
-
-
-.related-post-card-content h3 {
-
-    max-width: 100% !important;
-
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
-}
-
-
-/* =====================================================
-   DESKTOP
-====================================================== */
-
-@media (min-width: 769px) {
-
-    .blog-container {
-        max-width: 920px !important;
-    }
-
-}
-
-
-/* =====================================================
-   MOBILE
-====================================================== */
-
-@media (max-width: 768px) {
-
-    .blog-container {
-
-        width: 100% !important;
-        max-width: 100% !important;
-
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-
-    }
-
-
-    .single-post .post-header {
-
-        padding-top: 24px !important;
-        padding-bottom: 22px !important;
-
-    }
-
-
-    .single-post .post-header h1 {
-
-        font-size: clamp(
-            28px,
-            8vw,
-            40px
-        ) !important;
-
-        line-height: 1.15 !important;
-
-    }
-
-
-    .single-post .post-featured-image {
-
-        margin-bottom: 28px !important;
-
-    }
-
-
-    .single-post .post-content h2 {
-
-        margin-top: 38px !important;
-
-    }
-
-
-    .single-post .post-content blockquote {
-
-        padding: 18px !important;
-
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-
-    }
-
-
-    .single-post .source-note {
-
-        padding: 20px !important;
-
-    }
-
-
-    .related-posts-inner {
-
-        width: 100% !important;
-        max-width: 100% !important;
-
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-
-    }
-
-
-    .related-posts-grid {
-
-        grid-template-columns: 1fr !important;
-
-    }
-
-}
-
-
-/* =====================================================
-   VERY SMALL PHONES
-====================================================== */
-
-@media (max-width: 420px) {
-
-    .blog-container {
-
-        padding-left: 14px !important;
-        padding-right: 14px !important;
-
-    }
-
-
-    .single-post .post-content p {
-
-        margin-bottom: 18px !important;
-
-    }
-
-
-    .single-post .post-content h2 {
-
-        font-size: 26px !important;
-        line-height: 1.2 !important;
-
-    }
-
-
-    .related-posts-inner {
-
-        padding-left: 14px !important;
-        padding-right: 14px !important;
-
-    }
-
-}
-
-</style>
-
 </head>
 
 
@@ -780,12 +127,16 @@ body {
 <div class="blog-container">
 
 
+<!-- =====================================================
+     SINGLE BLOG POST
+====================================================== -->
+
 <article class="blog-post single-post">
 
 
-<!-- =================================================
-     HEADER
-================================================== -->
+<!-- =====================================================
+     POST HEADER
+====================================================== -->
 
 <header class="post-header">
 
@@ -811,9 +162,9 @@ body {
 
 
 
-<!-- =================================================
+<!-- =====================================================
      FEATURED IMAGE
-================================================== -->
+====================================================== -->
 
 <figure class="post-featured-image">
 
@@ -826,9 +177,9 @@ body {
 
 
 
-<!-- =================================================
-     ARTICLE
-================================================== -->
+<!-- =====================================================
+     ARTICLE CONTENT
+====================================================== -->
 
 <div class="post-content">
 
@@ -1486,9 +837,9 @@ Perhaps we simply forgot that she had more than one story.
 
 
 
-<!-- =================================================
+<!-- =====================================================
      SOURCE NOTE
-================================================== -->
+====================================================== -->
 
 <div class="source-note">
 
@@ -1520,6 +871,7 @@ than presenting one version as the single historical truth.
 </div>
 
 </article>
+
 
 </div>
 
@@ -1592,9 +944,9 @@ Loading more articles...
 
 <!-- =====================================================
      POST DATE + RELATED POSTS
-
-     NO GITHUB API
+     
      USES posts.json
+     NO GITHUB API
 ====================================================== -->
 
 <script>
@@ -1633,17 +985,12 @@ document.addEventListener(
                 value || "";
 
             return div.innerHTML;
+
         }
 
 
         /* =============================================
            IMAGE URL
-
-           Handles paths such as:
-
-           ../9b787...jpg
-
-           without creating placeholders.
         ============================================== */
 
         function getImageURL(
@@ -1750,9 +1097,11 @@ document.addEventListener(
 
 
             if (!response.ok) {
+
                 throw new Error(
                     "posts.json could not be loaded"
                 );
+
             }
 
 
@@ -1761,9 +1110,11 @@ document.addEventListener(
 
 
             if (!Array.isArray(posts)) {
+
                 throw new Error(
                     "Invalid posts.json"
                 );
+
             }
 
 
@@ -1837,6 +1188,7 @@ document.addEventListener(
                     "";
 
                 return;
+
             }
 
 
@@ -1860,7 +1212,7 @@ document.addEventListener(
                     /* =================================
                        IMAGE
 
-                       NO IMAGE = NO IMG ELEMENT
+                       NO IMAGE = NO IMAGE ELEMENT
                     ================================== */
 
                     let imageHTML = "";
