@@ -14,9 +14,6 @@ const POSTS_API =
 const REPO_API_BASE =
     `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
 
-const DEFAULT_POST_IMAGE =
-    "9418154f-5bd5-40df-ac7f-bb1df30525b4.png";
-
 
 /* =========================================
    MOBILE MENU
@@ -88,12 +85,21 @@ function escapeHTML(value) {
 }
 
 
+/* =========================================
+   SAFE POST URL
+========================================= */
+
 /*
  * IMPORTANT:
- * encodeURIComponent() is required here because
- * your Mārtāṇḍa post filename contains "?" and
- * Unicode characters.
+ *
+ * The Mārtāṇḍa filename contains:
+ *
+ * ?
+ *
+ * Therefore encode the complete filename
+ * before putting it into the article URL.
  */
+
 function getPostURL(filename) {
 
     return (
@@ -103,17 +109,20 @@ function getPostURL(filename) {
 }
 
 
+/* =========================================
+   SAFE RAW GITHUB URL
+========================================= */
+
 /*
- * Safely build a RAW GitHub URL from the API path.
+ * DO NOT use file.download_url.
  *
- * We intentionally DO NOT use file.download_url.
+ * A GitHub filename containing "?" can break
+ * the raw download URL because "?" is treated
+ * as the beginning of a query string.
  *
- * GitHub's download_url can contain a literal "?"
- * in a filename. In a browser URL, "?" starts the
- * query string and can therefore break that filename.
- *
- * Encoding every path segment fixes that.
+ * Every path segment is therefore encoded.
  */
+
 function getSafeRawURL(file) {
 
     const encodedPath =
@@ -129,6 +138,10 @@ function getSafeRawURL(file) {
     );
 }
 
+
+/* =========================================
+   IMAGE URL
+========================================= */
 
 function getImageURL(imageSource, postURL) {
 
@@ -171,6 +184,10 @@ function getImageURL(imageSource, postURL) {
 }
 
 
+/* =========================================
+   DATE FORMAT
+========================================= */
+
 function formatDate(dateValue) {
 
     if (!dateValue) {
@@ -206,22 +223,32 @@ function formatDate(dateValue) {
 function getDateFromPost(postDocument) {
 
     const selectors = [
+
         'meta[name="published-date"]',
+
         'meta[name="date"]',
+
         'meta[name="published"]',
+
         'meta[property="article:published_time"]',
+
         "time[datetime]",
+
         "[data-published-date]"
     ];
+
 
     for (const selector of selectors) {
 
         const element =
-            postDocument.querySelector(selector);
+            postDocument.querySelector(
+                selector
+            );
 
         if (!element) {
             continue;
         }
+
 
         const value =
             element.getAttribute("content") ||
@@ -229,20 +256,29 @@ function getDateFromPost(postDocument) {
             element.getAttribute("data-published-date") ||
             element.textContent;
 
+
         if (cleanText(value)) {
 
             const cleaned =
                 cleanText(value);
 
+
             if (
-                /^\d{4}-\d{2}-\d{2}/.test(cleaned)
+                /^\d{4}-\d{2}-\d{2}/.test(
+                    cleaned
+                )
             ) {
-                return formatDate(cleaned);
+
+                return formatDate(
+                    cleaned
+                );
             }
+
 
             return cleaned;
         }
     }
+
 
     return "";
 }
@@ -250,25 +286,33 @@ function getDateFromPost(postDocument) {
 
 /* =========================================
    GITHUB COMMIT DATE
-   Used automatically when a post has no
-   explicit published date.
 ========================================= */
 
-const dateCache = new Map();
+const dateCache =
+    new Map();
+
 
 async function getGitHubPostDate(filename) {
 
-    if (dateCache.has(filename)) {
-        return dateCache.get(filename);
+    if (
+        dateCache.has(filename)
+    ) {
+
+        return dateCache.get(
+            filename
+        );
     }
+
 
     try {
 
         const path =
             `posts/${filename}`;
 
+
         const apiURL =
             `${REPO_API_BASE}/commits?path=${encodeURIComponent(path)}&per_page=1`;
+
 
         const response =
             await fetch(
@@ -281,32 +325,42 @@ async function getGitHubPostDate(filename) {
                 }
             );
 
+
         if (!response.ok) {
             return "";
         }
 
+
         const commits =
             await response.json();
+
 
         if (
             !Array.isArray(commits) ||
             !commits.length
         ) {
+
             return "";
         }
+
 
         const rawDate =
             commits[0]?.commit?.author?.date ||
             commits[0]?.commit?.committer?.date ||
             "";
 
+
         const formatted =
-            formatDate(rawDate);
+            formatDate(
+                rawDate
+            );
+
 
         dateCache.set(
             filename,
             formatted
         );
+
 
         return formatted;
 
@@ -332,21 +386,20 @@ async function readPost(file) {
     try {
 
         const postURL =
-            getPostURL(file.name);
+            getPostURL(
+                file.name
+            );
 
-        /*
-         * THIS IS THE IMPORTANT FIX.
-         *
-         * Do not use:
-         *
-         * fetch(file.download_url)
-         *
-         * for your filename containing "?".
-         *
-         * Use a safely encoded RAW URL instead.
-         */
+
+        /* =====================================
+           READ HTML SAFELY
+        ===================================== */
+
         const safeRawURL =
-            getSafeRawURL(file);
+            getSafeRawURL(
+                file
+            );
+
 
         const response =
             await fetch(
@@ -355,6 +408,7 @@ async function readPost(file) {
                     cache: "no-store"
                 }
             );
+
 
         if (!response.ok) {
 
@@ -367,11 +421,14 @@ async function readPost(file) {
             return null;
         }
 
+
         const html =
             await response.text();
 
+
         const parser =
             new DOMParser();
+
 
         const postDocument =
             parser.parseFromString(
@@ -380,7 +437,9 @@ async function readPost(file) {
             );
 
 
-        /* TITLE */
+        /* =====================================
+           TITLE
+        ===================================== */
 
         const titleElement =
             postDocument.querySelector(
@@ -399,12 +458,14 @@ async function readPost(file) {
                 "title"
             );
 
+
         let title =
             titleElement
                 ? cleanText(
                     titleElement.textContent
                 )
                 : "";
+
 
         if (!title) {
 
@@ -421,7 +482,9 @@ async function readPost(file) {
         }
 
 
-        /* CATEGORY */
+        /* =====================================
+           CATEGORY
+        ===================================== */
 
         const categoryElement =
             postDocument.querySelector(
@@ -434,6 +497,7 @@ async function readPost(file) {
                 ".blog-category"
             );
 
+
         const category =
             categoryElement
                 ? cleanText(
@@ -442,45 +506,62 @@ async function readPost(file) {
                 : "BEYOND THE OBVIOUS";
 
 
-        /* IMAGE */
+        /* =====================================
+           FEATURED IMAGE
+        ===================================== */
+
+        /*
+         * IMPORTANT:
+         *
+         * There is NO default image anymore.
+         *
+         * If the article has an image:
+         *     use it.
+         *
+         * If the article has NO image:
+         *     image remains "".
+         *
+         * The Home card will then be created
+         * without an image section.
+         */
 
         const imageElement =
             postDocument.querySelector(
                 ".post-featured-image"
-            ) ||
-            postDocument.querySelector(
-                "article img"
             );
+
 
         let image = "";
 
+
         if (imageElement) {
 
-            image =
-                getImageURL(
-                    imageElement.getAttribute("src"),
-                    postURL
+            const imageSource =
+                imageElement.getAttribute(
+                    "src"
                 );
+
+
+            if (imageSource) {
+
+                image =
+                    getImageURL(
+                        imageSource,
+                        postURL
+                    );
+            }
         }
 
-        /*
-         * If the post does not contain a featured
-         * image, use the site's banner as a safe
-         * thumbnail instead of leaving a blank card.
-         */
 
-        if (!image) {
-            image =
-                DEFAULT_POST_IMAGE;
-        }
-
-
-        /* EXCERPT */
+        /* =====================================
+           EXCERPT
+        ===================================== */
 
         const descriptionElement =
             postDocument.querySelector(
                 'meta[name="description"]'
             );
+
 
         let excerpt =
             descriptionElement
@@ -490,6 +571,7 @@ async function readPost(file) {
                     )
                 )
                 : "";
+
 
         if (!excerpt) {
 
@@ -504,6 +586,7 @@ async function readPost(file) {
                     "article p"
                 );
 
+
             if (firstParagraph) {
 
                 excerpt =
@@ -514,10 +597,9 @@ async function readPost(file) {
         }
 
 
-        /*
-         * SEARCH THE WHOLE ARTICLE,
-         * not just title/excerpt.
-         */
+        /* =====================================
+           SEARCH TEXT
+        ===================================== */
 
         const searchText =
             cleanText(
@@ -526,12 +608,15 @@ async function readPost(file) {
             );
 
 
-        /* DATE */
+        /* =====================================
+           DATE
+        ===================================== */
 
         let date =
             getDateFromPost(
                 postDocument
             );
+
 
         if (!date) {
 
@@ -561,6 +646,7 @@ async function readPost(file) {
             searchText: searchText
         };
 
+
     } catch (error) {
 
         console.error(
@@ -575,18 +661,23 @@ async function readPost(file) {
 
 
 /* =========================================
-   POST CARD
+   CREATE BLOG CARD
 ========================================= */
 
 function createPostCard(post) {
 
     const article =
-        document.createElement("article");
+        document.createElement(
+            "article"
+        );
+
 
     article.className =
         "blog-card";
 
+
     article.dataset.search = (
+
         post.title +
         " " +
         post.category +
@@ -594,7 +685,36 @@ function createPostCard(post) {
         post.excerpt +
         " " +
         post.searchText
+
     ).toLowerCase();
+
+
+    /*
+     * IMAGE BLOCK
+     *
+     * Only created when the actual
+     * blog post contains an image.
+     */
+
+    const imageHTML =
+        post.image
+            ? `
+                <a
+                    href="${post.url}"
+                    class="blog-card-image-link"
+                    aria-label="Read ${escapeHTML(post.title)}"
+                >
+
+                    <img
+                        src="${escapeHTML(post.image)}"
+                        alt="${escapeHTML(post.title)}"
+                        class="blog-card-image"
+                        loading="lazy"
+                    >
+
+                </a>
+            `
+            : "";
 
 
     article.innerHTML = `
@@ -609,12 +729,15 @@ function createPostCard(post) {
 
             </h2>
 
+
             <button
                 class="post-share-button"
                 type="button"
                 aria-label="Share this article"
                 title="Share this article"
-            >↗</button>
+            >
+                ↗
+            </button>
 
         </div>
 
@@ -630,35 +753,36 @@ function createPostCard(post) {
         </div>
 
 
-        <div class="blog-card-body">
+        <div
+            class="
+                blog-card-body
+                ${post.image ? "" : "blog-card-body--no-image"}
+            "
+        >
 
-            <a
-                href="${post.url}"
-                class="blog-card-image-link"
-                aria-label="Read ${escapeHTML(post.title)}"
-            >
-
-                <img
-                    src="${post.image}"
-                    alt="${escapeHTML(post.title)}"
-                    class="blog-card-image"
-                    loading="lazy"
-                >
-
-            </a>
+            ${imageHTML}
 
 
             <div class="blog-card-text">
 
                 <p class="blog-card-category">
-                    ${escapeHTML(post.category)}
+
+                    ${escapeHTML(
+                        post.category
+                    )}
+
                 </p>
+
 
                 ${
                     post.excerpt
                         ? `
                             <p class="blog-card-excerpt">
-                                ${escapeHTML(post.excerpt)}
+
+                                ${escapeHTML(
+                                    post.excerpt
+                                )}
+
                             </p>
                         `
                         : ""
@@ -675,19 +799,28 @@ function createPostCard(post) {
                 Article
             </span>
 
+
             <a
                 href="${post.url}"
                 class="read-more"
-            >READ MORE</a>
+            >
+                READ MORE
+            </a>
 
         </div>
+
     `;
 
+
+    /* =====================================
+       SHARE BUTTON
+    ===================================== */
 
     const shareButton =
         article.querySelector(
             ".post-share-button"
         );
+
 
     if (shareButton) {
 
@@ -701,6 +834,7 @@ function createPostCard(post) {
                         window.location.href
                     ).href;
 
+
                 try {
 
                     if (
@@ -708,8 +842,13 @@ function createPostCard(post) {
                     ) {
 
                         await navigator.share({
-                            title: post.title,
-                            url: shareURL
+
+                            title:
+                                post.title,
+
+                            url:
+                                shareURL
+
                         });
 
                     } else {
@@ -718,8 +857,10 @@ function createPostCard(post) {
                             shareURL
                         );
 
+
                         shareButton.textContent =
                             "✓";
+
 
                         setTimeout(() => {
 
@@ -730,18 +871,21 @@ function createPostCard(post) {
                     }
 
                 } catch (error) {
-                    // User cancelled sharing.
+
+                    /* User cancelled sharing. */
+
                 }
             }
         );
     }
+
 
     return article;
 }
 
 
 /* =========================================
-   SORT
+   SORT POSTS
 ========================================= */
 
 function sortPosts(posts) {
@@ -750,25 +894,41 @@ function sortPosts(posts) {
         (a, b) => {
 
             const dateA =
-                Date.parse(a.date);
+                Date.parse(
+                    a.date
+                );
+
 
             const dateB =
-                Date.parse(b.date);
+                Date.parse(
+                    b.date
+                );
+
 
             if (
                 !Number.isNaN(dateA) &&
                 !Number.isNaN(dateB)
             ) {
+
                 return dateB - dateA;
             }
 
-            if (!Number.isNaN(dateA)) {
+
+            if (
+                !Number.isNaN(dateA)
+            ) {
+
                 return -1;
             }
 
-            if (!Number.isNaN(dateB)) {
+
+            if (
+                !Number.isNaN(dateB)
+            ) {
+
                 return 1;
             }
+
 
             return 0;
         }
@@ -777,7 +937,7 @@ function sortPosts(posts) {
 
 
 /* =========================================
-   DISPLAY
+   DISPLAY POSTS
 ========================================= */
 
 function displayPosts(posts) {
@@ -787,35 +947,49 @@ function displayPosts(posts) {
             "posts-container"
         );
 
+
     const noPostsMessage =
         document.getElementById(
             "no-posts-message"
         );
 
+
     if (!postsContainer) {
         return;
     }
 
-    postsContainer.innerHTML = "";
+
+    postsContainer.innerHTML =
+        "";
+
 
     if (!posts.length) {
 
         if (noPostsMessage) {
-            noPostsMessage.hidden = false;
+
+            noPostsMessage.hidden =
+                false;
         }
 
         return;
     }
 
+
     if (noPostsMessage) {
-        noPostsMessage.hidden = true;
+
+        noPostsMessage.hidden =
+            true;
     }
+
 
     posts.forEach(post => {
 
         postsContainer.appendChild(
-            createPostCard(post)
+            createPostCard(
+                post
+            )
         );
+
     });
 }
 
@@ -831,9 +1005,11 @@ function setupSearch() {
             "blogSearch"
         );
 
+
     if (!searchInput) {
         return;
     }
+
 
     searchInput.addEventListener(
         "input",
@@ -844,6 +1020,7 @@ function setupSearch() {
                     .trim()
                     .toLowerCase();
 
+
             if (!query) {
 
                 displayPosts(
@@ -853,24 +1030,30 @@ function setupSearch() {
                 return;
             }
 
+
             const filteredPosts =
                 allPosts.filter(
                     post => {
 
-                        const text =
-                            (
-                                post.title +
-                                " " +
-                                post.category +
-                                " " +
-                                post.excerpt +
-                                " " +
-                                post.searchText
-                            ).toLowerCase();
+                        const text = (
 
-                        return text.includes(query);
+                            post.title +
+                            " " +
+                            post.category +
+                            " " +
+                            post.excerpt +
+                            " " +
+                            post.searchText
+
+                        ).toLowerCase();
+
+
+                        return text.includes(
+                            query
+                        );
                     }
                 );
+
 
             displayPosts(
                 filteredPosts
@@ -887,6 +1070,7 @@ function setupSearch() {
 
 let allPosts = [];
 
+
 async function loadPosts() {
 
     const postsContainer =
@@ -894,14 +1078,17 @@ async function loadPosts() {
             "posts-container"
         );
 
+
     const loadingMessage =
         document.getElementById(
             "posts-loading"
         );
 
+
     if (!postsContainer) {
         return;
     }
+
 
     try {
 
@@ -913,9 +1100,12 @@ async function loadPosts() {
                         "Accept":
                             "application/vnd.github+json"
                     },
-                    cache: "no-store"
+
+                    cache:
+                        "no-store"
                 }
             );
+
 
         if (!response.ok) {
 
@@ -924,15 +1114,14 @@ async function loadPosts() {
             );
         }
 
+
         const files =
             await response.json();
 
 
         /*
-         * EVERY HTML FILE directly in /posts/
-         * becomes a blog post.
-         *
-         * No manual index.html editing required.
+         * Every HTML file directly inside
+         * /posts/ becomes an article.
          */
 
         const postFiles =
@@ -966,6 +1155,7 @@ async function loadPosts() {
 
 
         if (loadingMessage) {
+
             loadingMessage.remove();
         }
 
@@ -985,6 +1175,7 @@ async function loadPosts() {
             error
         );
 
+
         if (loadingMessage) {
 
             loadingMessage.innerHTML = `
@@ -1000,6 +1191,7 @@ async function loadPosts() {
                     </p>
 
                 </div>
+
             `;
         }
     }
