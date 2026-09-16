@@ -36,13 +36,8 @@ jobs:
 
 
           ROOT = Path(".")
-
-
           POSTS_DIR = ROOT / "posts"
-
-
           OUTPUT = ROOT / "posts.json"
-
 
           posts = []
 
@@ -95,7 +90,6 @@ jobs:
 
               ]
 
-
               for pattern in patterns:
 
                   match = re.search(
@@ -110,7 +104,6 @@ jobs:
                       return clean_text(
                           match.group(1)
                       )
-
 
               return ""
 
@@ -131,7 +124,6 @@ jobs:
 
               )
 
-
               if description:
 
                   return description
@@ -151,7 +143,6 @@ jobs:
 
               )
 
-
               if paragraph:
 
                   paragraph = re.sub(
@@ -163,7 +154,6 @@ jobs:
                   return clean_text(
                       paragraph
                   )
-
 
               return ""
 
@@ -179,7 +169,6 @@ jobs:
                   re.DOTALL
               )
 
-
               text = re.sub(
                   r"<style\b[^>]*>.*?</style>",
                   " ",
@@ -189,13 +178,11 @@ jobs:
                   re.DOTALL
               )
 
-
               text = re.sub(
                   r"<[^>]+>",
                   " ",
                   text
               )
-
 
               return clean_text(
                   text
@@ -220,7 +207,6 @@ jobs:
 
               ]
 
-
               for pattern in patterns:
 
                   value = get_first(
@@ -233,18 +219,10 @@ jobs:
                       return value
 
 
-              /*
-               * Your current article format has:
-               *
-               * By Sakshi Madgundi · 2026
-               *
-               * If there is no full date,
-               * keep the year.
-               */
-
               post_meta = get_first(
 
                   [
+
                       r'<div[^>]*class=["\'][^"\']*post-meta[^"\']*["\'][^>]*>(.*?)</div>',
 
                       r'<span[^>]*class=["\'][^"\']*post-meta[^"\']*["\'][^>]*>(.*?)</span>'
@@ -254,7 +232,6 @@ jobs:
                   html
 
               )
-
 
               if post_meta:
 
@@ -268,11 +245,6 @@ jobs:
                       return year.group(0)
 
 
-              /*
-               * Also look for a year anywhere
-               * in the article header if needed.
-               */
-
               header = get_first(
 
                   [
@@ -282,7 +254,6 @@ jobs:
                   html
 
               )
-
 
               if header:
 
@@ -306,24 +277,19 @@ jobs:
           ):
 
               if not file_path.is_file():
-
                   continue
-
 
               if file_path.suffix.lower() != ".html":
-
                   continue
 
 
-              filename =
-                  file_path.name
+              filename = file_path.name
 
 
-              html =
-                  file_path.read_text(
-                      encoding="utf-8",
-                      errors="replace"
-                  )
+              html = file_path.read_text(
+                  encoding="utf-8",
+                  errors="replace"
+              )
 
 
               title = get_first(
@@ -343,65 +309,48 @@ jobs:
 
               if not title:
 
-                  title =
-                      file_path.stem
+                  title = file_path.stem
 
 
-              category =
-                  get_first(
+              category = get_first(
 
-                      [
-                          r'<div[^>]*class=["\'][^"\']*post-category[^"\']*["\'][^>]*>(.*?)</div>',
+                  [
 
-                          r'<span[^>]*class=["\'][^"\']*post-category[^"\']*["\'][^>]*>(.*?)</span>'
+                      r'<div[^>]*class=["\'][^"\']*post-category[^"\']*["\'][^>]*>(.*?)</div>',
 
-                      ],
+                      r'<span[^>]*class=["\'][^"\']*post-category[^"\']*["\'][^>]*>(.*?)</span>'
 
-                      html
+                  ],
 
-                  )
+                  html
+
+              )
 
 
               if not category:
 
-                  category =
-                      "BEYOND THE OBVIOUS"
+                  category = "BEYOND THE OBVIOUS"
 
 
-              image =
-                  get_image(
-                      html
-                  )
+              image = get_image(html)
+
+              excerpt = get_excerpt(html)
+
+              date = get_date(html)
+
+              search_text = get_search_text(html)
 
 
-              excerpt =
-                  get_excerpt(
-                      html
-                  )
+              encoded_filename = quote(
+                  filename,
+                  safe=""
+              )
 
 
-              date =
-                  get_date(
-                      html
-                  )
-
-
-              search_text =
-                  get_search_text(
-                      html
-                  )
-
-
-              encoded_filename =
-                  quote(
-                      filename,
-                      safe=""
-                  )
-
-
-              post_url =
+              post_url = (
                   "posts/" +
                   encoded_filename
+              )
 
 
               posts.append({
@@ -433,28 +382,19 @@ jobs:
               })
 
 
-          /*
-           * Newest first.
-           *
-           * Full dates sort normally.
-           * Year-only dates are also supported.
-           */
-
           def sort_key(post):
 
-              date =
-                  str(
-                      post.get(
-                          "date",
-                          ""
-                      )
+              date = str(
+                  post.get(
+                      "date",
+                      ""
                   )
+              )
 
-              match =
-                  re.search(
-                      r"\b(20\d{2})\b",
-                      date
-                  )
+              match = re.search(
+                  r"\b(20\d{2})\b",
+                  date
+              )
 
               if match:
 
