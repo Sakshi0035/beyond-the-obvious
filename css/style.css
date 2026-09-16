@@ -552,3 +552,91 @@ a {
     }
 
 }
+/* =========================================
+   POSTS AREA
+========================================= */
+
+.blog-area {
+    background: #eeeeee;
+    padding: 45px 35px 80px;
+}
+
+.blog-container {
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+
+/* =========================================
+   POST CARD
+========================================= */
+
+.blog-card {
+    background: #ffffff;
+    padding: 42px 50px 50px;
+    margin-bottom: 35px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.blog-content h2 {
+    font-size: 32px;
+    line-height: 1.3;
+    margin-bottom: 18px;
+}
+
+.post-date {
+    font-size: 15px;
+    color: #666666;
+    margin-bottom: 30px;
+}
+
+.post-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.post-excerpt {
+    font-size: 17px;
+    line-height: 1.7;
+    margin-top: 25px;
+    color: #333333;
+}
+
+.read-more {
+    display: inline-block;
+    margin-top: 22px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    border-bottom: 2px solid #111111;
+    padding-bottom: 4px;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .blog-area {
+        padding: 25px 15px 50px;
+    }
+
+    .blog-card {
+        padding: 28px 20px 35px;
+    }
+
+    .blog-content h2 {
+        font-size: 25px;
+    }
+
+    .post-excerpt {
+        font-size: 15px;
+    }
+
+}
