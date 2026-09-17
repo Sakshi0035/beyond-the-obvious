@@ -1,0 +1,1130 @@
+<article class="bto-tech-post">
+
+  <style>
+    .bto-tech-post {
+      --bg: #0d0d0f;
+      --card: #151519;
+      --card-2: #1c1c21;
+      --text: #f5f5f2;
+      --muted: #a7a7ad;
+      --accent: #f5d84a;
+      --border: rgba(255,255,255,.10);
+
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      color: var(--text);
+      font-family: Inter, Arial, sans-serif;
+      line-height: 1.75;
+    }
+
+    .bto-tech-post * {
+      box-sizing: border-box;
+    }
+
+    .bto-tech-post h1,
+    .bto-tech-post h2,
+    .bto-tech-post h3 {
+      line-height: 1.2;
+      margin-top: 0;
+    }
+
+    .bto-tech-post p {
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .bto-tech-post .hero {
+      padding: 55px 0 45px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 55px;
+    }
+
+    .bto-tech-post .eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .bto-tech-post .hero h1 {
+      font-size: clamp(40px, 7vw, 72px);
+      letter-spacing: -3px;
+      max-width: 820px;
+      margin-bottom: 24px;
+    }
+
+    .bto-tech-post .hero .intro {
+      font-size: 20px;
+      max-width: 720px;
+      color: #c7c7cb;
+    }
+
+    .bto-tech-post section {
+      margin-bottom: 70px;
+    }
+
+    .bto-tech-post h2 {
+      font-size: clamp(28px, 5vw, 43px);
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+
+    .bto-tech-post h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .bto-tech-post .highlight {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .bto-tech-post .quote {
+      border-left: 4px solid var(--accent);
+      padding: 18px 25px;
+      margin: 30px 0;
+      background: rgba(245,216,74,.05);
+      border-radius: 0 12px 12px 0;
+    }
+
+    .bto-tech-post .quote p {
+      margin: 0;
+      color: #eeeeea;
+      font-size: 21px;
+      font-weight: 600;
+    }
+
+    /* VISUAL 01 */
+
+    .bto-tech-post .visual-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 35px;
+      margin: 35px 0;
+      overflow: hidden;
+    }
+
+    .bto-tech-post .visual-title {
+      color: #77777e;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+
+    .bto-tech-post .build-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .bto-tech-post .flow-item {
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      background: var(--card-2);
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .bto-tech-post .flow-arrow {
+      color: var(--accent);
+      font-size: 22px;
+    }
+
+    /* MISTAKE VISUAL */
+
+    .bto-tech-post .mistake-card {
+      background: #171719;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 20px;
+      padding: 30px;
+      margin-top: 30px;
+    }
+
+    .bto-tech-post .mistake-label {
+      color: #99999f;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      margin-bottom: 12px;
+    }
+
+    .bto-tech-post .mistake-card strong {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+
+    .bto-tech-post .code-line {
+      background: #0a0a0c;
+      border-radius: 12px;
+      padding: 18px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      color: #bfc0c5;
+      overflow-x: auto;
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .bto-tech-post .code-comment {
+      color: #77777e;
+    }
+
+    /* TWO LAYER VISUAL */
+
+    .bto-tech-post .layers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .bto-tech-post .layer {
+      padding: 30px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    .bto-tech-post .layer-number {
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+
+    .bto-tech-post .layer ul {
+      padding-left: 20px;
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .bto-tech-post .layer li {
+      margin: 7px 0;
+    }
+
+    /* EDITABLE VISUAL */
+
+    .bto-tech-post .dashboard {
+      background: #f1f1ef;
+      color: #151515;
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+
+    .bto-tech-post .dashboard-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #d4d4d0;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .bto-tech-post .dashboard-logo {
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .bto-tech-post .dashboard-button {
+      background: #151515;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-size: 12px;
+    }
+
+    .bto-tech-post .field {
+      background: white;
+      border: 1px solid #d7d7d4;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .bto-tech-post .field small {
+      display: block;
+      color: #888;
+      font-size: 10px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .bto-tech-post .field strong {
+      font-size: 15px;
+    }
+
+    /* MAINTENANCE LOOP */
+
+    .bto-tech-post .maintenance-loop {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      align-items: center;
+      margin-top: 35px;
+    }
+
+    .bto-tech-post .maintenance-step {
+      text-align: center;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      padding: 20px 10px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .bto-tech-post .maintenance-step span {
+      display: block;
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 11px;
+      margin-bottom: 7px;
+    }
+
+    /* CHECKLIST */
+
+    .bto-tech-post .check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .bto-tech-post .check-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: 16px;
+    }
+
+    .bto-tech-post .check-card .icon {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .bto-tech-post .check-card strong {
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .bto-tech-post .check-card p {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* RULE */
+
+    .bto-tech-post .big-rule {
+      margin: 60px 0;
+      padding: 45px 30px;
+      text-align: center;
+      background: var(--accent);
+      color: #111;
+      border-radius: 24px;
+    }
+
+    .bto-tech-post .big-rule small {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      opacity: .7;
+    }
+
+    .bto-tech-post .big-rule strong {
+      display: block;
+      font-size: clamp(24px, 5vw, 40px);
+      line-height: 1.25;
+      letter-spacing: -1px;
+    }
+
+    /* FINAL */
+
+    .bto-tech-post .final-note {
+      padding: 45px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bto-tech-post .final-note h2 {
+      max-width: 700px;
+    }
+
+    .bto-tech-post .signature {
+      margin-top: 35px;
+      color: #77777e;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 700px) {
+
+      .bto-tech-post {
+        padding: 15px;
+      }
+
+      .bto-tech-post .hero {
+        padding: 35px 0;
+        margin-bottom: 40px;
+      }
+
+      .bto-tech-post .hero h1 {
+        letter-spacing: -2px;
+      }
+
+      .bto-tech-post p {
+        font-size: 16px;
+      }
+
+      .bto-tech-post .visual-box {
+        padding: 22px;
+        border-radius: 16px;
+      }
+
+      .bto-tech-post .layers,
+      .bto-tech-post .check-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bto-tech-post .maintenance-loop {
+        grid-template-columns: 1fr;
+      }
+
+      .bto-tech-post .flow-arrow {
+        transform: rotate(90deg);
+      }
+
+      .bto-tech-post section {
+        margin-bottom: 50px;
+      }
+    }
+  </style>
+
+
+  <!-- HERO -->
+
+  <header class="hero">
+
+    <div class="eyebrow">Beyond The Obvious · Developer Notes</div>
+
+    <h1>
+      I Built the Website.<br>
+      But I Forgot One Important Thing.
+    </h1>
+
+    <p class="intro">
+      A website isn't really finished when it goes live.
+      It's finished when the person who owns it can actually live with it.
+    </p>
+
+  </header>
+
+
+  <!-- INTRO -->
+
+  <section>
+
+    <h2>The mistake I made on my first client project.</h2>
+
+    <p>
+      When I started working on my first client website, I had one very clear goal:
+      <span class="highlight">make the existing application look and work like the client's website.</span>
+    </p>
+
+    <p>
+      The client already had a fully designed application.
+      My task was to bring that experience into WordPress while keeping the same
+      visual identity, layout and functionality.
+    </p>
+
+    <p>
+      And I did it.
+    </p>
+
+    <p>
+      The pages looked right.
+      The interactions worked.
+      The design matched the application.
+      The website was live.
+    </p>
+
+    <div class="quote">
+      <p>
+        But I didn't ask myself what would happen after I handed the website over.
+      </p>
+    </div>
+
+  </section>
+
+
+  <!-- VISUAL -->
+
+  <section>
+
+    <div class="visual-box">
+
+      <div class="visual-title">
+        The part I didn't think about
+      </div>
+
+      <div class="build-flow">
+
+        <div class="flow-item">Build</div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">Launch</div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">?</div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- WHAT I DID -->
+
+  <section>
+
+    <h2>I focused on making it work.</h2>
+
+    <p>
+      Because the original application already existed, I concentrated heavily
+      on reproducing what was already there.
+    </p>
+
+    <p>
+      I worked on the custom UI, product pages, interactions, WooCommerce
+      functionality and responsive behavior.
+    </p>
+
+    <p>
+      I wanted precise control over the design.
+      And that led me toward a lot of hard-coded implementation.
+    </p>
+
+    <div class="mistake-card">
+
+      <div class="mistake-label">
+        My thinking at the time
+      </div>
+
+      <strong>
+        "If I can control the code, I can control the design."
+      </strong>
+
+      <div class="code-line">
+        <span class="code-comment">
+          // Custom page structure<br>
+          // Custom styling<br>
+          // Custom interactions<br>
+          // Everything exactly where I want it
+        </span>
+      </div>
+
+    </div>
+
+    <p>
+      And technically, that worked.
+    </p>
+
+    <p>
+      But there was a problem hiding underneath that success.
+    </p>
+
+  </section>
+
+
+  <!-- HARD CODE -->
+
+  <section>
+
+    <h2>Hard-coded doesn't automatically mean maintainable.</h2>
+
+    <p>
+      A hard-coded page can be functional.
+      It can be fast.
+      It can be beautifully designed.
+      It can even give the developer extremely precise control.
+    </p>
+
+    <p>
+      But then the client says:
+    </p>
+
+    <div class="quote">
+      <p>
+        "I want to change this product image."
+      </p>
+    </div>
+
+    <p>
+      Or:
+    </p>
+
+    <div class="quote">
+      <p>
+        "I want to update the price."
+      </p>
+    </div>
+
+    <p>
+      Or:
+    </p>
+
+    <div class="quote">
+      <p>
+        "Can I change this text myself?"
+      </p>
+    </div>
+
+    <p>
+      That's when the implementation starts to matter.
+    </p>
+
+  </section>
+
+
+  <!-- CLIENT DEPENDENCY -->
+
+  <section>
+
+    <h2>The website should belong to the client.</h2>
+
+    <p>
+      This is the part I understand much better now.
+    </p>
+
+    <p>
+      When a developer creates a website for a business,
+      they're not only delivering a collection of pages.
+    </p>
+
+    <p>
+      They're delivering something the business will continue using
+      after the developer leaves.
+    </p>
+
+    <div class="visual-box">
+
+      <div class="visual-title">
+        A small change shouldn't require a developer
+      </div>
+
+      <div class="build-flow">
+
+        <div class="flow-item">
+          Client wants to change price
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">
+          Dashboard
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">
+          Updated
+        </div>
+
+      </div>
+
+    </div>
+
+    <p>
+      If changing a simple product price requires opening a PHP file,
+      the client is dependent on the developer for something they should
+      reasonably be able to manage themselves.
+    </p>
+
+  </section>
+
+
+  <!-- TWO LAYERS -->
+
+  <section>
+
+    <h2>The distinction I should have made earlier.</h2>
+
+    <p>
+      There is an important difference between
+      <span class="highlight">custom design</span>
+      and
+      <span class="highlight">custom content management.</span>
+    </p>
+
+    <p>
+      You can build a highly customized website without making every piece
+      of content permanently trapped inside the code.
+    </p>
+
+    <div class="layers">
+
+      <div class="layer">
+
+        <div class="layer-number">
+          LAYER 01 · EXPERIENCE
+        </div>
+
+        <h3>The custom website</h3>
+
+        <ul>
+          <li>UI / UX</li>
+          <li>Layout</li>
+          <li>Custom CSS</li>
+          <li>Interactions</li>
+          <li>Animations</li>
+          <li>Responsive behavior</li>
+          <li>Complex functionality</li>
+        </ul>
+
+      </div>
+
+
+      <div class="layer">
+
+        <div class="layer-number">
+          LAYER 02 · CONTENT
+        </div>
+
+        <h3>The editable website</h3>
+
+        <ul>
+          <li>Product names</li>
+          <li>Prices</li>
+          <li>Images</li>
+          <li>Descriptions</li>
+          <li>Promotional content</li>
+          <li>Business information</li>
+          <li>Blog content</li>
+        </ul>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- DASHBOARD VISUAL -->
+
+  <section>
+
+    <h2>What the client should see.</h2>
+
+    <p>
+      The developer can control the structure and experience,
+      while the client gets a practical way to manage the content.
+    </p>
+
+    <div class="dashboard">
+
+      <div class="dashboard-top">
+
+        <div class="dashboard-logo">
+          PRODUCT EDITOR
+        </div>
+
+        <div class="dashboard-button">
+          Save Changes
+        </div>
+
+      </div>
+
+      <div class="field">
+        <small>Product name</small>
+        <strong>Product Name Here</strong>
+      </div>
+
+      <div class="field">
+        <small>Price</small>
+        <strong>₹950</strong>
+      </div>
+
+      <div class="field">
+        <small>Product image</small>
+        <strong>Change image →</strong>
+      </div>
+
+      <div class="field">
+        <small>Description</small>
+        <strong>Edit description →</strong>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- MAINTENANCE -->
+
+  <section>
+
+    <h2>Maintenance isn't an afterthought.</h2>
+
+    <p>
+      This was probably the biggest lesson I took from that project.
+    </p>
+
+    <p>
+      When someone says,
+      <span class="highlight">"The website is complete,"</span>
+      that doesn't necessarily mean the project is over.
+    </p>
+
+    <p>
+      Websites live.
+      Businesses change.
+      Products change.
+      Prices change.
+      Plugins update.
+      Browsers change.
+      Customers request new features.
+      And sometimes, something simply breaks.
+    </p>
+
+    <div class="quote">
+      <p>
+        A website is not a poster. It's a living product.
+      </p>
+    </div>
+
+  </section>
+
+
+  <!-- MAINTENANCE LOOP -->
+
+  <section>
+
+    <div class="visual-box">
+
+      <div class="visual-title">
+        Website lifecycle
+      </div>
+
+      <div class="maintenance-loop">
+
+        <div class="maintenance-step">
+          <span>01</span>
+          Design
+        </div>
+
+        <div class="maintenance-step">
+          <span>02</span>
+          Build
+        </div>
+
+        <div class="maintenance-step">
+          <span>03</span>
+          Launch
+        </div>
+
+        <div class="maintenance-step">
+          <span>04</span>
+          Maintain
+        </div>
+
+        <div class="maintenance-step">
+          <span>05</span>
+          Improve
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- WHAT MAINTENANCE MEANS -->
+
+  <section>
+
+    <h2>What does website maintenance actually mean?</h2>
+
+    <p>
+      Maintenance isn't simply fixing a website when something breaks.
+    </p>
+
+    <div class="check-grid">
+
+      <div class="check-card">
+
+        <div class="icon">✦</div>
+
+        <strong>Content</strong>
+
+        <p>
+          Products, prices, images, banners, descriptions,
+          contact information and new content.
+        </p>
+
+      </div>
+
+
+      <div class="check-card">
+
+        <div class="icon">⌘</div>
+
+        <strong>Technical</strong>
+
+        <p>
+          WordPress, themes, plugins, WooCommerce,
+          PHP compatibility, JavaScript and integrations.
+        </p>
+
+      </div>
+
+
+      <div class="check-card">
+
+        <div class="icon">↗</div>
+
+        <strong>UX</strong>
+
+        <p>
+          Broken buttons, mobile issues, confusing navigation,
+          outdated pages and inconsistent interfaces.
+        </p>
+
+      </div>
+
+
+      <div class="check-card">
+
+        <div class="icon">◈</div>
+
+        <strong>Security</strong>
+
+        <p>
+          Updates, backups, access permissions and
+          keeping the website's software current.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- WHAT I WOULD DO DIFFERENTLY -->
+
+  <section>
+
+    <h2>What I would do differently today.</h2>
+
+    <p>
+      If I rebuilt that project today, I wouldn't start by asking:
+    </p>
+
+    <div class="quote">
+      <p>
+        "How can I hard-code this page?"
+      </p>
+    </div>
+
+    <p>
+      I'd start with a different question:
+    </p>
+
+    <div class="big-rule">
+
+      <small>
+        The question I should have asked
+      </small>
+
+      <strong>
+        "Which parts of this page should the client be able to control?"
+      </strong>
+
+    </div>
+
+    <p>
+      Then I'd separate the website into the experience layer
+      and the content layer.
+    </p>
+
+    <p>
+      That doesn't mean everything needs to become editable.
+      Some things should absolutely remain controlled by the developer.
+    </p>
+
+    <p>
+      Complex JavaScript, layout systems, integrations,
+      responsive behavior and technical functionality may need
+      custom development.
+    </p>
+
+    <p>
+      But content that changes regularly should have a sensible
+      way for the client to manage it.
+    </p>
+
+  </section>
+
+
+  <!-- RULE -->
+
+  <section>
+
+    <div class="big-rule">
+
+      <small>
+        A rule I'm taking forward
+      </small>
+
+      <strong>
+        If the client is expected to change it regularly,
+        don't hide it inside the code.
+      </strong>
+
+    </div>
+
+  </section>
+
+
+  <!-- WEBSITE DEVELOPER -->
+
+  <section>
+
+    <h2>From "website developer" to "website partner."</h2>
+
+    <p>
+      This changed how I think about web development.
+    </p>
+
+    <p>
+      The job isn't simply:
+    </p>
+
+    <div class="visual-box">
+
+      <div class="build-flow">
+
+        <div class="flow-item">Design</div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">Code</div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">Deploy</div>
+
+      </div>
+
+    </div>
+
+    <p>
+      It's closer to:
+    </p>
+
+    <div class="visual-box">
+
+      <div class="build-flow">
+
+        <div class="flow-item">Understand</div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">Build</div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">Test</div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">Launch</div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">Maintain</div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- FINAL LESSON -->
+
+  <section class="final-note">
+
+    <h2>
+      The lesson I learned from one project.
+    </h2>
+
+    <p>
+      I don't consider the hard-coded pages a completely wasted decision.
+    </p>
+
+    <p>
+      They taught me something that tutorials couldn't:
+    </p>
+
+    <div class="quote">
+
+      <p>
+        A developer doesn't only build for today's requirements.
+        They build for the person who has to use the system tomorrow.
+      </p>
+
+    </div>
+
+    <p>
+      And tomorrow, the client might want to change something.
+    </p>
+
+    <p>
+      That's when maintainability stops being a technical detail
+      and becomes part of the product.
+    </p>
+
+    <div class="signature">
+      BEYOND THE OBVIOUS · DEVELOPER NOTES
+    </div>
+
+  </section>
+
+
+  <!-- END -->
+
+  <section>
+
+    <div class="big-rule">
+
+      <small>
+        Remember
+      </small>
+
+      <strong>
+        Build it.<br>
+        Make it editable.<br>
+        Keep it healthy.
+      </strong>
+
+    </div>
+
+  </section>
+
+</article>
