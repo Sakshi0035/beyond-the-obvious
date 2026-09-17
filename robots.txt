@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sakshi0035.github.io/beyond-the-obvious/sitemap.xml
