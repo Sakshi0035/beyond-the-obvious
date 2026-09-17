@@ -1,1130 +1,1124 @@
-<article class="bto-tech-post">
-
-  <style>
-    .bto-tech-post {
-      --bg: #0d0d0f;
-      --card: #151519;
-      --card-2: #1c1c21;
-      --text: #f5f5f2;
-      --muted: #a7a7ad;
-      --accent: #f5d84a;
-      --border: rgba(255,255,255,.10);
-
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-      color: var(--text);
-      font-family: Inter, Arial, sans-serif;
-      line-height: 1.75;
-    }
-
-    .bto-tech-post * {
-      box-sizing: border-box;
-    }
-
-    .bto-tech-post h1,
-    .bto-tech-post h2,
-    .bto-tech-post h3 {
-      line-height: 1.2;
-      margin-top: 0;
-    }
-
-    .bto-tech-post p {
-      color: var(--muted);
-      font-size: 17px;
-    }
-
-    .bto-tech-post .hero {
-      padding: 55px 0 45px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 55px;
-    }
-
-    .bto-tech-post .eyebrow {
-      display: inline-block;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 18px;
-      font-weight: 700;
-    }
-
-    .bto-tech-post .hero h1 {
-      font-size: clamp(40px, 7vw, 72px);
-      letter-spacing: -3px;
-      max-width: 820px;
-      margin-bottom: 24px;
-    }
-
-    .bto-tech-post .hero .intro {
-      font-size: 20px;
-      max-width: 720px;
-      color: #c7c7cb;
-    }
-
-    .bto-tech-post section {
-      margin-bottom: 70px;
-    }
-
-    .bto-tech-post h2 {
-      font-size: clamp(28px, 5vw, 43px);
-      letter-spacing: -1.5px;
-      margin-bottom: 20px;
-    }
-
-    .bto-tech-post h3 {
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
-
-    .bto-tech-post .highlight {
-      color: var(--text);
-      font-weight: 700;
-    }
-
-    .bto-tech-post .quote {
-      border-left: 4px solid var(--accent);
-      padding: 18px 25px;
-      margin: 30px 0;
-      background: rgba(245,216,74,.05);
-      border-radius: 0 12px 12px 0;
-    }
-
-    .bto-tech-post .quote p {
-      margin: 0;
-      color: #eeeeea;
-      font-size: 21px;
-      font-weight: 600;
-    }
-
-    /* VISUAL 01 */
-
-    .bto-tech-post .visual-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 35px;
-      margin: 35px 0;
-      overflow: hidden;
-    }
-
-    .bto-tech-post .visual-title {
-      color: #77777e;
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 25px;
-    }
-
-    .bto-tech-post .build-flow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .bto-tech-post .flow-item {
-      padding: 16px 20px;
-      border: 1px solid var(--border);
-      background: var(--card-2);
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .bto-tech-post .flow-arrow {
-      color: var(--accent);
-      font-size: 22px;
-    }
-
-    /* MISTAKE VISUAL */
-
-    .bto-tech-post .mistake-card {
-      background: #171719;
-      border: 1px solid rgba(255,255,255,.09);
-      border-radius: 20px;
-      padding: 30px;
-      margin-top: 30px;
-    }
-
-    .bto-tech-post .mistake-label {
-      color: #99999f;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-size: 11px;
-      margin-bottom: 12px;
-    }
-
-    .bto-tech-post .mistake-card strong {
-      display: block;
-      font-size: 28px;
-      margin-bottom: 15px;
-    }
-
-    .bto-tech-post .code-line {
-      background: #0a0a0c;
-      border-radius: 12px;
-      padding: 18px;
-      font-family: Consolas, monospace;
-      font-size: 13px;
-      color: #bfc0c5;
-      overflow-x: auto;
-      border: 1px solid rgba(255,255,255,.07);
-    }
-
-    .bto-tech-post .code-comment {
-      color: #77777e;
-    }
-
-    /* TWO LAYER VISUAL */
-
-    .bto-tech-post .layers {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-top: 30px;
-    }
-
-    .bto-tech-post .layer {
-      padding: 30px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-    }
-
-    .bto-tech-post .layer-number {
-      color: var(--accent);
-      font-family: monospace;
-      font-size: 13px;
-      margin-bottom: 15px;
-    }
-
-    .bto-tech-post .layer ul {
-      padding-left: 20px;
-      margin-bottom: 0;
-      color: var(--muted);
-    }
-
-    .bto-tech-post .layer li {
-      margin: 7px 0;
-    }
-
-    /* EDITABLE VISUAL */
-
-    .bto-tech-post .dashboard {
-      background: #f1f1ef;
-      color: #151515;
-      border-radius: 18px;
-      padding: 20px;
-      margin-top: 30px;
-    }
-
-    .bto-tech-post .dashboard-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #d4d4d0;
-      padding-bottom: 15px;
-      margin-bottom: 20px;
-    }
-
-    .bto-tech-post .dashboard-logo {
-      font-weight: 800;
-      font-size: 15px;
-    }
-
-    .bto-tech-post .dashboard-button {
-      background: #151515;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 7px;
-      font-size: 12px;
-    }
-
-    .bto-tech-post .field {
-      background: white;
-      border: 1px solid #d7d7d4;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-    }
-
-    .bto-tech-post .field small {
-      display: block;
-      color: #888;
-      font-size: 10px;
-      margin-bottom: 4px;
-      text-transform: uppercase;
-    }
-
-    .bto-tech-post .field strong {
-      font-size: 15px;
-    }
-
-    /* MAINTENANCE LOOP */
-
-    .bto-tech-post .maintenance-loop {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      align-items: center;
-      margin-top: 35px;
-    }
-
-    .bto-tech-post .maintenance-step {
-      text-align: center;
-      background: var(--card-2);
-      border: 1px solid var(--border);
-      padding: 20px 10px;
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .bto-tech-post .maintenance-step span {
-      display: block;
-      color: var(--accent);
-      font-family: monospace;
-      font-size: 11px;
-      margin-bottom: 7px;
-    }
-
-    /* CHECKLIST */
-
-    .bto-tech-post .check-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 30px;
-    }
-
-    .bto-tech-post .check-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 24px;
-      border-radius: 16px;
-    }
-
-    .bto-tech-post .check-card .icon {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-
-    .bto-tech-post .check-card strong {
-      display: block;
-      margin-bottom: 7px;
-    }
-
-    .bto-tech-post .check-card p {
-      font-size: 14px;
-      margin: 0;
-    }
-
-    /* RULE */
-
-    .bto-tech-post .big-rule {
-      margin: 60px 0;
-      padding: 45px 30px;
-      text-align: center;
-      background: var(--accent);
-      color: #111;
-      border-radius: 24px;
-    }
-
-    .bto-tech-post .big-rule small {
-      display: block;
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 15px;
-      opacity: .7;
-    }
-
-    .bto-tech-post .big-rule strong {
-      display: block;
-      font-size: clamp(24px, 5vw, 40px);
-      line-height: 1.25;
-      letter-spacing: -1px;
-    }
-
-    /* FINAL */
-
-    .bto-tech-post .final-note {
-      padding: 45px 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .bto-tech-post .final-note h2 {
-      max-width: 700px;
-    }
-
-    .bto-tech-post .signature {
-      margin-top: 35px;
-      color: #77777e;
-      font-size: 13px;
-      letter-spacing: 1px;
-    }
-
-    @media (max-width: 700px) {
-
-      .bto-tech-post {
-        padding: 15px;
-      }
-
-      .bto-tech-post .hero {
-        padding: 35px 0;
-        margin-bottom: 40px;
-      }
-
-      .bto-tech-post .hero h1 {
-        letter-spacing: -2px;
-      }
-
-      .bto-tech-post p {
-        font-size: 16px;
-      }
-
-      .bto-tech-post .visual-box {
-        padding: 22px;
-        border-radius: 16px;
-      }
-
-      .bto-tech-post .layers,
-      .bto-tech-post .check-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .bto-tech-post .maintenance-loop {
-        grid-template-columns: 1fr;
-      }
-
-      .bto-tech-post .flow-arrow {
-        transform: rotate(90deg);
-      }
-
-      .bto-tech-post section {
-        margin-bottom: 50px;
-      }
-    }
-  </style>
-
-
-  <!-- HERO -->
-
-  <header class="hero">
-
-    <div class="eyebrow">Beyond The Obvious · Developer Notes</div>
-
-    <h1>
-      I Built the Website.<br>
-      But I Forgot One Important Thing.
-    </h1>
-
-    <p class="intro">
-      A website isn't really finished when it goes live.
-      It's finished when the person who owns it can actually live with it.
-    </p>
-
-  </header>
-
-
-  <!-- INTRO -->
-
-  <section>
-
-    <h2>The mistake I made on my first client project.</h2>
-
-    <p>
-      When I started working on my first client website, I had one very clear goal:
-      <span class="highlight">make the existing application look and work like the client's website.</span>
-    </p>
-
-    <p>
-      The client already had a fully designed application.
-      My task was to bring that experience into WordPress while keeping the same
-      visual identity, layout and functionality.
-    </p>
-
-    <p>
-      And I did it.
-    </p>
-
-    <p>
-      The pages looked right.
-      The interactions worked.
-      The design matched the application.
-      The website was live.
-    </p>
-
-    <div class="quote">
-      <p>
-        But I didn't ask myself what would happen after I handed the website over.
-      </p>
-    </div>
-
-  </section>
-
-
-  <!-- VISUAL -->
-
-  <section>
-
-    <div class="visual-box">
-
-      <div class="visual-title">
-        The part I didn't think about
-      </div>
-
-      <div class="build-flow">
-
-        <div class="flow-item">Build</div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">Launch</div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">?</div>
-
-      </div>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        I Built the Website. But I Forgot One Important Thing. | Beyond The Obvious
+    </title>
+
+    <meta
+        name="description"
+        content="A personal lesson from my first client website project: why website maintenance, client editability and maintainable WordPress development matter."
+    >
+
+    <meta
+        name="author"
+        content="Sakshi Madgundi"
+    >
+
+    <!-- BLOG POST INFORMATION -->
+
+    <meta
+        name="post-category"
+        content="TECH · WEB DEVELOPMENT"
+    >
+
+    <meta
+        name="post-date"
+        content="2026"
+    >
+
+    <meta
+        name="post-excerpt"
+        content="Building a website is only part of the job. My first client project taught me why maintainability and client editability matter just as much as the final design."
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body data-post-file="website-maintenance-client-editability.html">
+
+
+<!-- =========================================
+     MOBILE HEADER
+========================================= -->
+
+<header class="mobile-header">
+
+    <a
+        href="../index.html"
+        class="mobile-logo"
+    >
+        Beyond The Obvious
+    </a>
+
+    <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+    >
+        ☰
+    </button>
+
+</header>
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside
+    class="sidebar"
+    id="sidebar"
+>
+
+    <div class="profile">
+
+        <img
+            src="../image (1).png"
+            alt="Sakshi Madgundi"
+            class="profile-image"
+        >
+
+        <h3>
+            SAKSHI MADGUNDI
+        </h3>
+
+        <a
+            href="https://github.com/Sakshi0035"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="profile-button"
+        >
+            VISIT PROFILE
+        </a>
 
     </div>
 
-  </section>
 
+    <div class="sidebar-social">
 
-  <!-- WHAT I DID -->
+        <a
+            href="https://github.com/Sakshi0035"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            GitHub
+        </a>
 
-  <section>
+        <a
+            href="https://www.youtube.com/@sakshimeandmyself"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            YouTube
+        </a>
 
-    <h2>I focused on making it work.</h2>
-
-    <p>
-      Because the original application already existed, I concentrated heavily
-      on reproducing what was already there.
-    </p>
-
-    <p>
-      I worked on the custom UI, product pages, interactions, WooCommerce
-      functionality and responsive behavior.
-    </p>
-
-    <p>
-      I wanted precise control over the design.
-      And that led me toward a lot of hard-coded implementation.
-    </p>
-
-    <div class="mistake-card">
-
-      <div class="mistake-label">
-        My thinking at the time
-      </div>
-
-      <strong>
-        "If I can control the code, I can control the design."
-      </strong>
-
-      <div class="code-line">
-        <span class="code-comment">
-          // Custom page structure<br>
-          // Custom styling<br>
-          // Custom interactions<br>
-          // Everything exactly where I want it
-        </span>
-      </div>
+        <a
+            href="https://echopaths.gumroad.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            My Ebooks
+        </a>
 
     </div>
 
-    <p>
-      And technically, that worked.
-    </p>
+</aside>
 
-    <p>
-      But there was a problem hiding underneath that success.
-    </p>
 
-  </section>
+<!-- =========================================
+     MAIN
+========================================= -->
 
+<main class="main-content">
 
-  <!-- HARD CODE -->
 
-  <section>
+<!-- =========================================
+     COMMON HERO / HEADER
+========================================= -->
 
-    <h2>Hard-coded doesn't automatically mean maintainable.</h2>
+<section class="hero">
 
-    <p>
-      A hard-coded page can be functional.
-      It can be fast.
-      It can be beautifully designed.
-      It can even give the developer extremely precise control.
-    </p>
+    <div class="hero-overlay">
 
-    <p>
-      But then the client says:
-    </p>
-
-    <div class="quote">
-      <p>
-        "I want to change this product image."
-      </p>
-    </div>
-
-    <p>
-      Or:
-    </p>
-
-    <div class="quote">
-      <p>
-        "I want to update the price."
-      </p>
-    </div>
-
-    <p>
-      Or:
-    </p>
-
-    <div class="quote">
-      <p>
-        "Can I change this text myself?"
-      </p>
-    </div>
-
-    <p>
-      That's when the implementation starts to matter.
-    </p>
-
-  </section>
-
-
-  <!-- CLIENT DEPENDENCY -->
-
-  <section>
-
-    <h2>The website should belong to the client.</h2>
-
-    <p>
-      This is the part I understand much better now.
-    </p>
-
-    <p>
-      When a developer creates a website for a business,
-      they're not only delivering a collection of pages.
-    </p>
-
-    <p>
-      They're delivering something the business will continue using
-      after the developer leaves.
-    </p>
-
-    <div class="visual-box">
-
-      <div class="visual-title">
-        A small change shouldn't require a developer
-      </div>
-
-      <div class="build-flow">
-
-        <div class="flow-item">
-          Client wants to change price
-        </div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">
-          Dashboard
-        </div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">
-          Updated
-        </div>
-
-      </div>
-
-    </div>
-
-    <p>
-      If changing a simple product price requires opening a PHP file,
-      the client is dependent on the developer for something they should
-      reasonably be able to manage themselves.
-    </p>
-
-  </section>
-
-
-  <!-- TWO LAYERS -->
-
-  <section>
-
-    <h2>The distinction I should have made earlier.</h2>
-
-    <p>
-      There is an important difference between
-      <span class="highlight">custom design</span>
-      and
-      <span class="highlight">custom content management.</span>
-    </p>
-
-    <p>
-      You can build a highly customized website without making every piece
-      of content permanently trapped inside the code.
-    </p>
-
-    <div class="layers">
-
-      <div class="layer">
-
-        <div class="layer-number">
-          LAYER 01 · EXPERIENCE
-        </div>
-
-        <h3>The custom website</h3>
-
-        <ul>
-          <li>UI / UX</li>
-          <li>Layout</li>
-          <li>Custom CSS</li>
-          <li>Interactions</li>
-          <li>Animations</li>
-          <li>Responsive behavior</li>
-          <li>Complex functionality</li>
-        </ul>
-
-      </div>
-
-
-      <div class="layer">
-
-        <div class="layer-number">
-          LAYER 02 · CONTENT
-        </div>
-
-        <h3>The editable website</h3>
-
-        <ul>
-          <li>Product names</li>
-          <li>Prices</li>
-          <li>Images</li>
-          <li>Descriptions</li>
-          <li>Promotional content</li>
-          <li>Business information</li>
-          <li>Blog content</li>
-        </ul>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- DASHBOARD VISUAL -->
-
-  <section>
-
-    <h2>What the client should see.</h2>
-
-    <p>
-      The developer can control the structure and experience,
-      while the client gets a practical way to manage the content.
-    </p>
-
-    <div class="dashboard">
-
-      <div class="dashboard-top">
-
-        <div class="dashboard-logo">
-          PRODUCT EDITOR
-        </div>
-
-        <div class="dashboard-button">
-          Save Changes
-        </div>
-
-      </div>
-
-      <div class="field">
-        <small>Product name</small>
-        <strong>Product Name Here</strong>
-      </div>
-
-      <div class="field">
-        <small>Price</small>
-        <strong>₹950</strong>
-      </div>
-
-      <div class="field">
-        <small>Product image</small>
-        <strong>Change image →</strong>
-      </div>
-
-      <div class="field">
-        <small>Description</small>
-        <strong>Edit description →</strong>
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- MAINTENANCE -->
-
-  <section>
-
-    <h2>Maintenance isn't an afterthought.</h2>
-
-    <p>
-      This was probably the biggest lesson I took from that project.
-    </p>
-
-    <p>
-      When someone says,
-      <span class="highlight">"The website is complete,"</span>
-      that doesn't necessarily mean the project is over.
-    </p>
-
-    <p>
-      Websites live.
-      Businesses change.
-      Products change.
-      Prices change.
-      Plugins update.
-      Browsers change.
-      Customers request new features.
-      And sometimes, something simply breaks.
-    </p>
-
-    <div class="quote">
-      <p>
-        A website is not a poster. It's a living product.
-      </p>
-    </div>
-
-  </section>
-
-
-  <!-- MAINTENANCE LOOP -->
-
-  <section>
-
-    <div class="visual-box">
-
-      <div class="visual-title">
-        Website lifecycle
-      </div>
-
-      <div class="maintenance-loop">
-
-        <div class="maintenance-step">
-          <span>01</span>
-          Design
-        </div>
-
-        <div class="maintenance-step">
-          <span>02</span>
-          Build
-        </div>
-
-        <div class="maintenance-step">
-          <span>03</span>
-          Launch
-        </div>
-
-        <div class="maintenance-step">
-          <span>04</span>
-          Maintain
-        </div>
-
-        <div class="maintenance-step">
-          <span>05</span>
-          Improve
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- WHAT MAINTENANCE MEANS -->
-
-  <section>
-
-    <h2>What does website maintenance actually mean?</h2>
-
-    <p>
-      Maintenance isn't simply fixing a website when something breaks.
-    </p>
-
-    <div class="check-grid">
-
-      <div class="check-card">
-
-        <div class="icon">✦</div>
-
-        <strong>Content</strong>
+        <h1>
+            Beyond The Obvious
+        </h1>
 
         <p>
-          Products, prices, images, banners, descriptions,
-          contact information and new content.
+            This blog is dedicated to stories, ideas, experiences and
+            things worth thinking about. From education and careers to
+            creativity, ambition and life, this is a space to look
+            beyond what's obvious.
         </p>
 
-      </div>
+
+        <div class="hero-nav-row">
+
+            <nav
+                class="main-nav"
+                aria-label="Main navigation"
+            >
+
+                <a href="../index.html">
+                    HOME
+                </a>
+
+                <a href="../about.html">
+                    ABOUT
+                </a>
+
+                <a href="../contact.html">
+                    CONTACT
+                </a>
+
+            </nav>
 
 
-      <div class="check-card">
+            <div class="hero-search">
 
-        <div class="icon">⌘</div>
+                <label
+                    for="blogSearch"
+                    class="sr-only"
+                >
+                    Search articles
+                </label>
 
-        <strong>Technical</strong>
+                <input
+                    type="search"
+                    id="blogSearch"
+                    placeholder="Search articles..."
+                    autocomplete="off"
+                    aria-label="Search articles"
+                >
 
-        <p>
-          WordPress, themes, plugins, WooCommerce,
-          PHP compatibility, JavaScript and integrations.
-        </p>
+            </div>
 
-      </div>
-
-
-      <div class="check-card">
-
-        <div class="icon">↗</div>
-
-        <strong>UX</strong>
-
-        <p>
-          Broken buttons, mobile issues, confusing navigation,
-          outdated pages and inconsistent interfaces.
-        </p>
-
-      </div>
-
-
-      <div class="check-card">
-
-        <div class="icon">◈</div>
-
-        <strong>Security</strong>
-
-        <p>
-          Updates, backups, access permissions and
-          keeping the website's software current.
-        </p>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- WHAT I WOULD DO DIFFERENTLY -->
-
-  <section>
-
-    <h2>What I would do differently today.</h2>
-
-    <p>
-      If I rebuilt that project today, I wouldn't start by asking:
-    </p>
-
-    <div class="quote">
-      <p>
-        "How can I hard-code this page?"
-      </p>
-    </div>
-
-    <p>
-      I'd start with a different question:
-    </p>
-
-    <div class="big-rule">
-
-      <small>
-        The question I should have asked
-      </small>
-
-      <strong>
-        "Which parts of this page should the client be able to control?"
-      </strong>
+        </div>
 
     </div>
 
-    <p>
-      Then I'd separate the website into the experience layer
-      and the content layer.
-    </p>
-
-    <p>
-      That doesn't mean everything needs to become editable.
-      Some things should absolutely remain controlled by the developer.
-    </p>
-
-    <p>
-      Complex JavaScript, layout systems, integrations,
-      responsive behavior and technical functionality may need
-      custom development.
-    </p>
-
-    <p>
-      But content that changes regularly should have a sensible
-      way for the client to manage it.
-    </p>
-
-  </section>
+</section>
 
 
-  <!-- RULE -->
+<!-- =========================================
+     BLOG POST AREA
+========================================= -->
 
-  <section>
+<section class="blog-area">
 
-    <div class="big-rule">
+    <div class="blog-container">
 
-      <small>
-        A rule I'm taking forward
-      </small>
 
-      <strong>
-        If the client is expected to change it regularly,
-        don't hide it inside the code.
-      </strong>
+        <article class="blog-post single-post">
+
+
+            <!-- =====================================
+                 POST HEADER
+            ====================================== -->
+
+            <header class="post-header">
+
+                <div class="post-header-inner">
+
+                    <a
+                        href="../index.html"
+                        class="back-to-home"
+                    >
+                        ← Back to Home
+                    </a>
+
+
+                    <div class="post-category">
+                        TECH · WEB DEVELOPMENT
+                    </div>
+
+
+                    <h1>
+                        I Built the Website.
+                        But I Forgot One Important Thing.
+                    </h1>
+
+
+                    <div class="post-meta">
+                        By Sakshi Madgundi · 2026
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =====================================
+                 FEATURED IMAGE
+            ====================================== -->
+
+            <!--
+                Replace this image with your article's
+                featured image when you create it.
+            -->
+
+            <img
+                src="../website-maintenance.png"
+                alt="Website development, maintenance and client editability"
+                class="post-featured-image"
+            >
+
+
+            <!-- =====================================
+                 ARTICLE CONTENT
+            ====================================== -->
+
+            <div class="post-content">
+
+
+                <p>
+                    I used to think that the hardest part of creating a
+                    website was getting everything to work.
+                </p>
+
+
+                <p>
+                    The design has to look right.
+                    The buttons have to work.
+                    The pages have to be responsive.
+                    The functionality has to connect properly.
+                </p>
+
+
+                <p>
+                    And yes, all of that matters.
+                </p>
+
+
+                <p>
+                    But my first client project taught me something that
+                    I didn't think about enough in the beginning:
+                </p>
+
+
+                <blockquote>
+                    A website doesn't stop being a product just because
+                    the developer has finished building it.
+                </blockquote>
+
+
+                <h2>
+                    The project I was trying to solve
+                </h2>
+
+
+                <p>
+                    For my first client project, there was already an
+                    application with its own design and user experience.
+                </p>
+
+
+                <p>
+                    My task was to bring that existing experience into
+                    WordPress and make the website work with the same
+                    visual direction.
+                </p>
+
+
+                <p>
+                    So my focus was very clear:
+                </p>
+
+
+                <ul>
+                    <li>Match the existing design</li>
+                    <li>Recreate the required pages</li>
+                    <li>Make the interactions work</li>
+                    <li>Make the WooCommerce functionality live</li>
+                    <li>Keep the website visually close to the original application</li>
+                </ul>
+
+
+                <p>
+                    And I did what I set out to do.
+                </p>
+
+
+                <p>
+                    The website worked.
+                    The pages looked right.
+                    The custom UI was there.
+                    The functionality was connected.
+                </p>
+
+
+                <p>
+                    But there was one question I didn't ask early enough.
+                </p>
+
+
+                <blockquote>
+                    What happens when the client wants to change something
+                    after I am finished?
+                </blockquote>
+
+
+                <h2>
+                    I focused too much on making it work
+                </h2>
+
+
+                <p>
+                    Because I wanted precise control over the design,
+                    I ended up hard-coding many parts of the website.
+                </p>
+
+
+                <p>
+                    At the time, this made sense to me.
+                </p>
+
+
+                <p>
+                    If I controlled the HTML, CSS, JavaScript and page
+                    structure directly, I could reproduce the design
+                    exactly the way I wanted.
+                </p>
+
+
+                <p>
+                    And technically, that approach worked.
+                </p>
+
+
+                <p>
+                    The problem wasn't simply that I used custom code.
+                </p>
+
+
+                <p>
+                    The problem was that I didn't think enough about
+                    <strong>who would need to edit that content later.</strong>
+                </p>
+
+
+                <!-- =====================================
+                     VISUAL ELEMENT
+                ====================================== -->
+
+                <div class="article-visual">
+
+                    <div class="article-visual-label">
+                        THE WEBSITE LIFECYCLE
+                    </div>
+
+                    <div class="article-flow">
+
+                        <span>
+                            BUILD
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            LAUNCH
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            MAINTAIN
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            IMPROVE
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <h2>
+                    Hard-coded doesn't automatically mean maintainable
+                </h2>
+
+
+                <p>
+                    There is nothing inherently wrong with custom coding.
+                </p>
+
+
+                <p>
+                    Custom development is often exactly what a project
+                    needs.
+                </p>
+
+
+                <p>
+                    The important question is:
+                </p>
+
+
+                <blockquote>
+                    Which parts should be controlled by the developer,
+                    and which parts should be controlled by the client?
+                </blockquote>
+
+
+                <p>
+                    For example, a custom layout or complex interaction
+                    may need developer-controlled code.
+                </p>
+
+
+                <p>
+                    But a product name, product image, price or description
+                    is something a business owner may need to change
+                    regularly.
+                </p>
+
+
+                <h2>
+                    Then comes the uncomfortable part
+                </h2>
+
+
+                <p>
+                    Imagine the client wants to change the price of a
+                    product.
+                </p>
+
+
+                <p>
+                    Or replace its image.
+                </p>
+
+
+                <p>
+                    Or update the description.
+                </p>
+
+
+                <p>
+                    Or change a promotional message.
+                </p>
+
+
+                <p>
+                    If all of that information lives directly inside
+                    custom code, the client may have to come back to
+                    the developer for every small update.
+                </p>
+
+
+                <p>
+                    And that's where I realized something important:
+                </p>
+
+
+                <blockquote>
+                    The website may be working perfectly for the developer,
+                    while still being inconvenient for the person who owns it.
+                </blockquote>
+
+
+                <!-- =====================================
+                     VISUAL ELEMENT
+                ====================================== -->
+
+                <div class="article-visual">
+
+                    <div class="article-visual-label">
+                        A SMALL CHANGE SHOULD STAY SMALL
+                    </div>
+
+                    <div class="article-flow">
+
+                        <span>
+                            CHANGE PRICE
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            EDITOR
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            SAVE
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <h2>
+                    The website should belong to the client
+                </h2>
+
+
+                <p>
+                    This is probably the biggest thing I would approach
+                    differently now.
+                </p>
+
+
+                <p>
+                    When a developer creates a website for a business,
+                    they're not just delivering a collection of pages.
+                </p>
+
+
+                <p>
+                    They're delivering something that the business will
+                    continue using after the project is handed over.
+                </p>
+
+
+                <p>
+                    Businesses change.
+                </p>
+
+
+                <p>
+                    Products change.
+                </p>
+
+
+                <p>
+                    Prices change.
+                </p>
+
+
+                <p>
+                    Images change.
+                </p>
+
+
+                <p>
+                    Promotions change.
+                </p>
+
+
+                <p>
+                    New content gets added.
+                </p>
+
+
+                <p>
+                    Old content needs to be removed.
+                </p>
+
+
+                <p>
+                    So the website needs to be prepared for that reality.
+                </p>
+
+
+                <h2>
+                    Custom design and editable content are not opposites
+                </h2>
+
+
+                <p>
+                    This is another distinction I understand much better now.
+                </p>
+
+
+                <p>
+                    A website can have a completely custom design while
+                    still giving the client control over the content
+                    that they actually need to manage.
+                </p>
+
+
+                <div class="article-comparison">
+
+                    <div class="article-comparison-card">
+
+                        <h3>
+                            Developer-controlled
+                        </h3>
+
+                        <ul>
+                            <li>Page structure</li>
+                            <li>UI / UX</li>
+                            <li>Responsive layout</li>
+                            <li>Complex interactions</li>
+                            <li>Custom functionality</li>
+                            <li>Technical integrations</li>
+                        </ul>
+
+                    </div>
+
+
+                    <div class="article-comparison-card">
+
+                        <h3>
+                            Client-editable
+                        </h3>
+
+                        <ul>
+                            <li>Product names</li>
+                            <li>Prices</li>
+                            <li>Product images</li>
+                            <li>Descriptions</li>
+                            <li>Promotional content</li>
+                            <li>Business information</li>
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+                <p>
+                    The goal isn't to make every single thing editable.
+                </p>
+
+
+                <p>
+                    The goal is to make the <strong>right things</strong>
+                    editable.
+                </p>
+
+
+                <h2>
+                    Maintenance is much bigger than fixing broken pages
+                </h2>
+
+
+                <p>
+                    Before this project, I thought about maintenance mostly
+                    as something you deal with when something breaks.
+                </p>
+
+
+                <p>
+                    But maintenance can mean much more than that.
+                </p>
+
+
+                <h3>
+                    Content maintenance
+                </h3>
+
+
+                <p>
+                    Products, prices, images, descriptions, banners,
+                    contact details and other business information can
+                    change over time.
+                </p>
+
+
+                <h3>
+                    Technical maintenance
+                </h3>
+
+
+                <p>
+                    WordPress, themes, plugins, WooCommerce, PHP,
+                    JavaScript and third-party integrations all need
+                    attention as a website continues to evolve.
+                </p>
+
+
+                <h3>
+                    User-experience maintenance
+                </h3>
+
+
+                <p>
+                    A button that worked months ago might become broken.
+                    A mobile layout might need adjustment.
+                    A page might become outdated.
+                </p>
+
+
+                <h3>
+                    Security and reliability
+                </h3>
+
+
+                <p>
+                    Updates, backups, permissions and the overall health
+                    of the website also become part of keeping a site
+                    running properly.
+                </p>
+
+
+                <!-- =====================================
+                     VISUAL ELEMENT
+                ====================================== -->
+
+                <div class="article-visual">
+
+                    <div class="article-visual-label">
+                        MAINTENANCE IS PART OF THE PRODUCT
+                    </div>
+
+                    <div class="article-maintenance-grid">
+
+                        <div>
+                            <strong>CONTENT</strong>
+                            <span>Update</span>
+                        </div>
+
+                        <div>
+                            <strong>TECHNICAL</strong>
+                            <span>Maintain</span>
+                        </div>
+
+                        <div>
+                            <strong>UX</strong>
+                            <span>Improve</span>
+                        </div>
+
+                        <div>
+                            <strong>SECURITY</strong>
+                            <span>Protect</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <h2>
+                    A website is not a poster
+                </h2>
+
+
+                <p>
+                    A poster can be designed, printed and finished.
+                </p>
+
+
+                <p>
+                    A website is different.
+                </p>
+
+
+                <p>
+                    It lives.
+                </p>
+
+
+                <p>
+                    It changes with the business.
+                </p>
+
+
+                <p>
+                    That's why I now think about a website more like a
+                    living product than a finished file.
+                </p>
+
+
+                <blockquote>
+                    Launch day is not the end of a website's life.
+                    It's the beginning of its maintenance cycle.
+                </blockquote>
+
+
+                <h2>
+                    What I would do differently today
+                </h2>
+
+
+                <p>
+                    If I were rebuilding that project today, I wouldn't
+                    start by asking:
+                </p>
+
+
+                <blockquote>
+                    "How can I hard-code this page?"
+                </blockquote>
+
+
+                <p>
+                    I'd start with:
+                </p>
+
+
+                <blockquote>
+                    "Which parts of this page should the client be able
+                    to control?"
+                </blockquote>
+
+
+                <p>
+                    Then I would design the implementation around that
+                    answer.
+                </p>
+
+
+                <p>
+                    The visual experience can still be custom.
+                    The UI can still match the original application.
+                    The interactions can still be custom-built.
+                </p>
+
+
+                <p>
+                    But the content that changes regularly should have
+                    a sensible editing system behind it.
+                </p>
+
+
+                <h2>
+                    The question I should have asked first
+                </h2>
+
+
+                <div class="article-highlight">
+
+                    <span>
+                        BEFORE BUILDING
+                    </span>
+
+                    <strong>
+                        Who will need to change this later?
+                    </strong>
+
+                </div>
+
+
+                <p>
+                    That one question can change the entire way a website
+                    is planned.
+                </p>
+
+
+                <p>
+                    Because you're no longer thinking only about how to
+                    make the website work today.
+                </p>
+
+
+                <p>
+                    You're thinking about how someone else will use it
+                    tomorrow.
+                </p>
+
+
+                <h2>
+                    From website developer to website partner
+                </h2>
+
+
+                <p>
+                    This project changed how I look at web development.
+                </p>
+
+
+                <p>
+                    The job isn't simply:
+                </p>
+
+
+                <div class="article-visual">
+
+                    <div class="article-flow">
+
+                        <span>
+                            DESIGN
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            CODE
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            DEPLOY
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <p>
+                    It's closer to:
+                </p>
+
+
+                <div class="article-visual">
+
+                    <div class="article-flow">
+
+                        <span>
+                            UNDERSTAND
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            BUILD
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            TEST
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            LAUNCH
+                        </span>
+
+                        <b>→</b>
+
+                        <span>
+                            MAINTAIN
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <p>
+                    And maintenance isn't just another service you can
+                    mention after the website is complete.
+                </p>
+
+
+                <p>
+                    It should be considered while the website is being
+                    built.
+                </p>
+
+
+                <h2>
+                    The lesson I took from one project
+                </h2>
+
+
+                <p>
+                    I don't look back at the hard-coded parts of that
+                    project and think the entire approach was useless.
+                </p>
+
+
+                <p>
+                    It taught me something that I probably wouldn't have
+                    understood as clearly from a tutorial.
+                </p>
+
+
+                <blockquote>
+                    A developer doesn't only build for today's requirements.
+                    They build for the person who has to use the system tomorrow.
+                </blockquote>
+
+
+                <p>
+                    And tomorrow, the client might want to change something.
+                </p>
+
+
+                <p>
+                    That's when maintainability stops being just a technical
+                    detail and becomes part of the product itself.
+                </p>
+
+
+                <div class="article-highlight">
+
+                    <span>
+                        THE TAKEAWAY
+                    </span>
+
+                    <strong>
+                        Build it well.<br>
+                        Make the right things editable.<br>
+                        Maintain it after launch.
+                    </strong>
+
+                </div>
+
+
+                <p>
+                    Because a website isn't really finished when you
+                    publish it.
+                </p>
+
+
+                <p>
+                    It's finished when it's built to live.
+                </p>
+
+
+                <div class="source-note">
+
+                    <h3>
+                        A Note From The Developer
+                    </h3>
+
+                    <p>
+                        This post is based on a lesson from one of my
+                        first client website projects and reflects how
+                        my approach to WordPress and web development
+                        has evolved through practical experience.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </article>
+
 
     </div>
 
-  </section>
+</section>
 
 
-  <!-- WEBSITE DEVELOPER -->
+<!-- =========================================
+     FOOTER
+========================================= -->
 
-  <section>
-
-    <h2>From "website developer" to "website partner."</h2>
-
-    <p>
-      This changed how I think about web development.
-    </p>
+<footer class="site-footer">
 
     <p>
-      The job isn't simply:
+        © 2026 Beyond The Obvious · Sakshi Madgundi
     </p>
 
-    <div class="visual-box">
-
-      <div class="build-flow">
-
-        <div class="flow-item">Design</div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">Code</div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">Deploy</div>
-
-      </div>
-
-    </div>
-
-    <p>
-      It's closer to:
-    </p>
-
-    <div class="visual-box">
-
-      <div class="build-flow">
-
-        <div class="flow-item">Understand</div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">Build</div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">Test</div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">Launch</div>
-
-        <div class="flow-arrow">→</div>
-
-        <div class="flow-item">Maintain</div>
-
-      </div>
-
-    </div>
-
-  </section>
+</footer>
 
 
-  <!-- FINAL LESSON -->
+<script src="../js/main.js"></script>
 
-  <section class="final-note">
+</main>
 
-    <h2>
-      The lesson I learned from one project.
-    </h2>
+</body>
 
-    <p>
-      I don't consider the hard-coded pages a completely wasted decision.
-    </p>
-
-    <p>
-      They taught me something that tutorials couldn't:
-    </p>
-
-    <div class="quote">
-
-      <p>
-        A developer doesn't only build for today's requirements.
-        They build for the person who has to use the system tomorrow.
-      </p>
-
-    </div>
-
-    <p>
-      And tomorrow, the client might want to change something.
-    </p>
-
-    <p>
-      That's when maintainability stops being a technical detail
-      and becomes part of the product.
-    </p>
-
-    <div class="signature">
-      BEYOND THE OBVIOUS · DEVELOPER NOTES
-    </div>
-
-  </section>
-
-
-  <!-- END -->
-
-  <section>
-
-    <div class="big-rule">
-
-      <small>
-        Remember
-      </small>
-
-      <strong>
-        Build it.<br>
-        Make it editable.<br>
-        Keep it healthy.
-      </strong>
-
-    </div>
-
-  </section>
-
-</article>
+</html>
